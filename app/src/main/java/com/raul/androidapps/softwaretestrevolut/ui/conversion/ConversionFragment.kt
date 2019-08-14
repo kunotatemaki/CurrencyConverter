@@ -1,4 +1,4 @@
-package com.raul.androidapps.softwaretestrevolut.ui.main
+package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,23 +7,25 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.raul.androidapps.softwaretestrevolut.R
-import com.raul.androidapps.softwaretestrevolut.databinding.MainFragmentBinding
+import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBinding
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
 import timber.log.Timber
 
-class ConversionFragment : BaseFragment() {
+class ConversionFragment : BaseFragment(), (String) -> Unit {
 
-    private lateinit var binding: MainFragmentBinding
+
+    private lateinit var binding: ConversionFragmentBinding
 
     private lateinit var viewModel: BaseViewModel
+    private lateinit var adapter: ConversionAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.main_fragment, container, false, bindingComponent)
+        binding = DataBindingUtil.inflate(inflater, R.layout.conversion_fragment, container, false, bindingComponent)
         return binding.root
     }
 
@@ -31,12 +33,15 @@ class ConversionFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         //todo decide which one to use (pass as an argument)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CoroutineViewModel::class.java)
+        adapter = ConversionAdapter(this, bindingComponent)
+        binding.ratesList.adapter = adapter
 
         viewModel.getRates()
             .nonNull()
             .observe({lifecycle}){
                 val list = it.toListOfSingleRates("100")
                 Timber.d("rukia Recibido rates ${it.base}")
+                adapter.submitList(list)
         }
 
         binding.testButton.setOnClickListener {
@@ -54,6 +59,9 @@ class ConversionFragment : BaseFragment() {
         viewModel.stopFetchingRates()
     }
 
+    override fun invoke(p1: String) {
+//Todo change body of created functions use File | Settings | File Templates.
+    }
 
 
 }

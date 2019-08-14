@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.raul.androidapps.softwaretestrevolut.di.interfaces.ViewModelKey
 import com.raul.androidapps.softwaretestrevolut.ui.common.ViewModelFactory
-import com.raul.androidapps.softwaretestrevolut.ui.main.CoroutineViewModel
+import com.raul.androidapps.softwaretestrevolut.ui.conversion.CoroutineViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

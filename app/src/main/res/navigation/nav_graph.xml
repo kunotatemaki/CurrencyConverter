@@ -3,10 +3,10 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/nav_graph"
-            app:startDestination="@id/revolut_fragment">
+            app:startDestination="@id/conversion_fragment">
 
-    <fragment android:id="@+id/revolut_fragment"
-              android:name="com.raul.androidapps.softwaretestrevolut.ui.main.ConversionFragment"
-              android:label="revolut_fragment" tools:layout="@layout/main_fragment"/>
+    <fragment android:id="@+id/conversion_fragment"
+              android:name="com.raul.androidapps.softwaretestrevolut.ui.conversion.ConversionFragment"
+              android:label="conversion_fragment" tools:layout="@layout/conversion_fragment"/>
 
 </navigation>

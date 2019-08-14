@@ -1,4 +1,4 @@
-package com.raul.androidapps.softwaretestrevolut.ui.main
+package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.viewModelScope
