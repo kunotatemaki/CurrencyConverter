@@ -35,6 +35,7 @@ class ConversionFragment : BaseFragment() {
         viewModel.getRates()
             .nonNull()
             .observe({lifecycle}){
+                val list = it.toListOfSingleRates("100")
                 Timber.d("rukia Recibido rates ${it.base}")
         }
 

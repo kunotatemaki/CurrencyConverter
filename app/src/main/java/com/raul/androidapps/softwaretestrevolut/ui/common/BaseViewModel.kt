@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
+import com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate
 import com.raul.androidapps.softwaretestrevolut.utils.RevolutConstants
 
 abstract class BaseViewModel : ViewModel() {
@@ -21,5 +22,6 @@ abstract class BaseViewModel : ViewModel() {
         baseCurrency = base
         startFetchingRates()
     }
+
 
 }
