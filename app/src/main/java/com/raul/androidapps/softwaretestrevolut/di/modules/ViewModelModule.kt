@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.raul.androidapps.softwaretestrevolut.di.interfaces.ViewModelKey
 import com.raul.androidapps.softwaretestrevolut.ui.common.ViewModelFactory
-import com.raul.androidapps.softwaretestrevolut.ui.main.MainViewModel
+import com.raul.androidapps.softwaretestrevolut.ui.main.CoroutineViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -17,8 +17,8 @@ internal abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(MainViewModel::class)
-    internal abstract fun bindMainViewModel(mainViewModel: MainViewModel): ViewModel
+    @ViewModelKey(CoroutineViewModel::class)
+    internal abstract fun bindCoroutineViewModel(coroutineViewModel: CoroutineViewModel): ViewModel
 
     @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

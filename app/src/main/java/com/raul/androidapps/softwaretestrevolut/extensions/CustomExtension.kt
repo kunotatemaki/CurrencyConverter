@@ -1,9 +1,6 @@
 package com.raul.androidapps.softwaretestrevolut.extensions
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import java.lang.ref.WeakReference
 import java.text.Normalizer
 
@@ -38,4 +35,18 @@ fun <T> LiveData<T>.getDistinct(): LiveData<T> {
         }
     })
     return distinctLiveData
+}
+
+class NonNullMediatorLiveData<T> : MediatorLiveData<T>()
+
+fun <T> LiveData<T>.nonNull(): NonNullMediatorLiveData<T> {
+    val mediator: NonNullMediatorLiveData<T> = NonNullMediatorLiveData()
+    mediator.addSource(this, Observer { it?.let { mediator.value = it } })
+    return mediator
+}
+
+fun <T> NonNullMediatorLiveData<T>.observe(owner: LifecycleOwner, observer: (t: T) -> Unit) {
+    this.observe(owner, Observer {
+        it?.let(observer)
+    })
 }

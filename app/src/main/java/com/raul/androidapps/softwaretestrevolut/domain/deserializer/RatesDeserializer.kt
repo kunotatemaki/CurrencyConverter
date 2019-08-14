@@ -2,16 +2,16 @@ package com.raul.androidapps.softwaretestrevolut.domain.deserializer
 
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
-import com.raul.androidapps.softwaretestrevolut.domain.responses.RatesResponse
+import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
 import java.lang.reflect.Type
 
-class RatesDeserializer : JsonDeserializer<RatesResponse> {
+class RatesDeserializer : JsonDeserializer<Rates> {
 
     @Throws(JsonParseException::class)
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): RatesResponse {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Rates {
         var base = ""
         var date = ""
-        var rates:  Map<String, Double>? = null
+        var currencyRates:  Map<String, Double>? = null
 
         if (json.isJsonObject) {
             val jsonObject = json.asJsonObject
@@ -23,11 +23,11 @@ class RatesDeserializer : JsonDeserializer<RatesResponse> {
             }
             if (jsonObject.get("rates").isJsonObject) {
                 val type = object : TypeToken<Map<String, Double>>() {}.type
-                rates = Gson().fromJson(jsonObject.get("rates"), type)
+                currencyRates = Gson().fromJson(jsonObject.get("rates"), type)
             }
 
         }
-        return RatesResponse(base, date, rates)
+        return Rates(base, date, currencyRates)
     }
 
 }

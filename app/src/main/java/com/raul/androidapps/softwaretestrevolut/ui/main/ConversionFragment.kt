@@ -8,13 +8,16 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.MainFragmentBinding
+import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
+import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
+import timber.log.Timber
 
 class ConversionFragment : BaseFragment() {
 
     private lateinit var binding: MainFragmentBinding
 
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: BaseViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,8 +29,30 @@ class ConversionFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
+        //todo decide which one to use (pass as an argument)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CoroutineViewModel::class.java)
+
+        viewModel.getRates()
+            .nonNull()
+            .observe({lifecycle}){
+                Timber.d("rukia Recibido rates ${it.base}")
+        }
+
+        binding.testButton.setOnClickListener {
+            viewModel.changeCurrency("GBP")
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.startFetchingRates()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.stopFetchingRates()
+    }
+
+
 
 }
