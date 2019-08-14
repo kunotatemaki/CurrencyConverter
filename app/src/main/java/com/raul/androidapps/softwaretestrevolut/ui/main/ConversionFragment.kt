@@ -10,7 +10,7 @@ import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.MainFragmentBinding
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 
-class MainFragment : BaseFragment() {
+class ConversionFragment : BaseFragment() {
 
     private lateinit var binding: MainFragmentBinding
 

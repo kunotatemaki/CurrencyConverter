@@ -6,7 +6,7 @@
             app:startDestination="@id/revolut_fragment">
 
     <fragment android:id="@+id/revolut_fragment"
-              android:name="com.raul.androidapps.softwaretestrevolut.ui.main.MainFragment"
+              android:name="com.raul.androidapps.softwaretestrevolut.ui.main.ConversionFragment"
               android:label="revolut_fragment" tools:layout="@layout/main_fragment"/>
 
 </navigation>

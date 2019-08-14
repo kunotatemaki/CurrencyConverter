@@ -1,7 +1,7 @@
 package com.raul.androidapps.softwaretestrevolut.di.modules
 
 import com.raul.androidapps.softwaretestrevolut.di.interfaces.CustomScopes
-import com.raul.androidapps.softwaretestrevolut.ui.main.MainFragment
+import com.raul.androidapps.softwaretestrevolut.ui.main.ConversionFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -13,6 +13,6 @@ abstract class FragmentsProvider {
 
     @CustomScopes.FragmentScope
     @ContributesAndroidInjector
-    abstract fun providesMainFragmentFactory(): MainFragment
+    abstract fun providesMainFragmentFactory(): ConversionFragment
 
 }
