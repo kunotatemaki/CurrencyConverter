@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
+import com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate
 import com.raul.androidapps.softwaretestrevolut.utils.RevolutConstants
 
 abstract class BaseViewModel : ViewModel() {
@@ -21,6 +22,29 @@ abstract class BaseViewModel : ViewModel() {
         stopFetchingRates()
         baseCurrency = base
         startFetchingRates()
+    }
+
+    protected fun getNewRatesSorted(rates: Rates?): Rates? {
+        rates?.getListWithCalculatedPrices(basePrice)
+        val oldRates = ratesObservable.value
+        if(oldRates == null){
+            return rates
+        }else {
+            rates?.list?.firstOrNull { it.isBasePrice }?.let { newBase ->
+                val listOfCodesInPreviousOrder = oldRates.list.map { it.code }.toMutableList()
+                val positionOfNewBaseInOldList = listOfCodesInPreviousOrder.indexOf(newBase.code)
+                if(positionOfNewBaseInOldList >= 0) {
+                    listOfCodesInPreviousOrder.apply{
+                        removeAt(positionOfNewBaseInOldList)
+                        add(0, newBase.code)
+                    }
+                    val orderByCode = listOfCodesInPreviousOrder.withIndex().associate { it.value to it.index }
+                    val newRatesWithSortedWithPreviousList: List<SingleRate> = rates.list.sortedBy { orderByCode[it.code] }
+                    return Rates(newRatesWithSortedWithPreviousList)
+                }
+            }
+        }
+        return rates
     }
 
 

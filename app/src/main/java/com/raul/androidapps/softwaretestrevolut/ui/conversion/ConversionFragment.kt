@@ -1,16 +1,20 @@
 package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBinding
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
+
 
 class ConversionFragment : BaseFragment() {
 
@@ -36,6 +40,8 @@ class ConversionFragment : BaseFragment() {
 
     }
 
+    private lateinit var smoothScroller: LinearSmoothScroller
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,18 +64,27 @@ class ConversionFragment : BaseFragment() {
         adapter = ConversionAdapter(basePriceListener, bindingComponent)
         binding.ratesList.adapter = adapter
 
+        smoothScroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
         viewModel.getRates()
             .nonNull()
             .observe({ lifecycle }) { rates ->
+                adapter.submitList(rates.list)
                 if (adapter.hasSameBaseCurrency(rates.list.firstOrNull { it.isBasePrice })) {
                     binding.ratesList.updatePriceViewsWithoutRepainting(rates.list)
-                }
-                adapter.submitList(rates.list)
-            }
+                } else {
+                    smoothScroller.targetPosition = 0
+                    Handler().postDelayed({
+                        (binding.ratesList.layoutManager as? LinearLayoutManager)?.startSmoothScroll(
+                            smoothScroller
+                        )
+                    }, 750)
 
-        binding.testButton.setOnClickListener {
-            viewModel.changeCurrency("GBP")
-        }
+                }
+            }
     }
 
     override fun onResume() {

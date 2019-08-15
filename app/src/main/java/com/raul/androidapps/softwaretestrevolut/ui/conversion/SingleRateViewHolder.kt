@@ -30,7 +30,8 @@ class SingleRateViewHolder(private val binding: RateItemBinding) :
             binding.root.setOnClickListener(null)
         } else {
             binding.root.setOnClickListener{
-                basePriceListener.onItemClicked(item.code, item.price)
+                val price = binding.currencyPriceNonEditable.text.toString()
+                basePriceListener.onItemClicked(item.code, price)
             }
         }
 

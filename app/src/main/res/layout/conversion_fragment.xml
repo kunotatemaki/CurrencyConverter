@@ -9,15 +9,6 @@
             android:layout_height="match_parent"
             tools:context=".ui.conversion.ConversionFragment">
 
-        <Button
-                android:id="@+id/test_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="GBP"
-                android:visibility="gone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
         <com.raul.androidapps.softwaretestrevolut.ui.conversion.ConversionRecyclerView
                 android:id="@+id/ratesList"
                 android:layout_width="0dp"
