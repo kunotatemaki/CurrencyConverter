@@ -22,23 +22,25 @@ class SingleRateViewHolder(
         if (item.isBasePrice) {
             binding.price = basePriceListener.getBasePrice()
             binding.textColor = resourcesManager.getColor(R.color.colorPrimary)
+        } else {
+            binding.textColor = resourcesManager.getColor(android.R.color.darker_gray)
+            binding.price = item.price
+        }
+        binding.isBasePrice = item.isBasePrice
+        binding.currencyPriceNonEditable.tag = item.code
+        binding.executePendingBindings()
+        if (item.isBasePrice) {
             binding.currencyPriceEditable?.apply {
                 addTextChangedListener(basePriceListener.textWatcher)
                 setSelection(this.text.length)
             }
             binding.root.setOnClickListener(null)
         } else {
-            binding.textColor = resourcesManager.getColor(android.R.color.darker_gray)
-            binding.price = item.price
-            binding.root.setOnClickListener {
+           binding.root.setOnClickListener {
                 val price = binding.currencyPriceNonEditable.text.toString()
                 basePriceListener.onItemClicked(item.code, price)
             }
         }
-        binding.isBasePrice = item.isBasePrice
-        binding.currencyPriceNonEditable.tag = item.code
-        binding.executePendingBindings()
-
 
     }
 }
