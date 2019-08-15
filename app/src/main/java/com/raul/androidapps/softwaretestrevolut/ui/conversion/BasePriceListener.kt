@@ -2,13 +2,13 @@ package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
 import android.text.Editable
 import android.text.TextWatcher
-import java.math.BigDecimal
 
-class BasePriceListener {
-    var basePrice: BigDecimal = 0.toBigDecimal()
+abstract class BasePriceListener {
     val textWatcher = object : TextWatcher {
         private var editing = false
         override fun afterTextChanged(p0: Editable?) {
+
+
             if (!editing) {
                 editing = true
                 val formatted = p0?.replaceFirst("^0+(?!$)".toRegex(), "")
@@ -21,11 +21,7 @@ class BasePriceListener {
                 }
                 editing = false
             }
-            basePrice = try {
-                p0.toString().toBigDecimal()
-            } catch (e: NumberFormatException) {
-                0.toBigDecimal()
-            }
+            updateBasePrice(p0.toString())
 
         }
 
@@ -36,5 +32,8 @@ class BasePriceListener {
 
         }
     }
+
+    abstract fun updateBasePrice(basePrice: String)
+    abstract fun getBasePrice(): String
 
 }

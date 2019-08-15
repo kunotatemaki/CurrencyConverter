@@ -1,7 +1,7 @@
 package com.raul.androidapps.softwaretestrevolut.domain.model
 
-import timber.log.Timber
 import java.math.BigDecimal
+import java.util.*
 
 
 data class SingleRate constructor(
@@ -9,12 +9,8 @@ data class SingleRate constructor(
     val rate: BigDecimal
 ) {
 
-    fun calculatePrice(basePrice: BigDecimal): String {
-        //todo convert to proper format
-        if(code == "EUR"){
-            Timber.d("eur rate: $rate, basePrice: $basePrice")
-        }
-        return (rate * basePrice).toString()
-    }
+    var price: String = ""
+
+
 
 }

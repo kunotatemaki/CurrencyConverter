@@ -6,6 +6,6 @@ import com.raul.androidapps.softwaretestrevolut.network.Resource
 
 interface Repository {
 
-    suspend fun getRates(base: String): Resource<Rates>
+    suspend fun getRates(base: String): Resource<Rates?>
 
 }

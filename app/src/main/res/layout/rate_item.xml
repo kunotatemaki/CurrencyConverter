@@ -6,11 +6,14 @@
     <data>
 
         <variable
-                name="singleRate"
-                type="com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate" />
+                name="code"
+                type="String" />
         <variable
-                name="basePrice"
-                type="java.math.BigDecimal" />
+                name="price"
+                type="String" />
+        <variable
+                name="isBasePrice"
+                type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +24,7 @@
                 android:id="@+id/currencyCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{singleRate.code}"
+                android:text="@{code}"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -31,10 +34,10 @@
                 tools:text="EUR" />
 
         <EditText
-                android:id="@+id/currencyPrice"
+                android:id="@+id/currencyPriceEditable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{singleRate.calculatePrice(basePrice)}"
+                android:text="@{price}"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
@@ -43,6 +46,23 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="100.87"
+                android:importantForAutofill="no"
+                isVisibleOrGone="@{isBasePrice}"
+                tools:ignore="LabelFor" />
+
+        <TextView
+                android:id="@+id/currencyPriceNonEditable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{price}"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="100.87"
+                isVisibleOrGone="@{!isBasePrice}"
                 android:importantForAutofill="no" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

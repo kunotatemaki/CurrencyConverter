@@ -47,7 +47,7 @@ class ConversionAdapter(
         }
 
         override fun areContentsTheSame(oldItem: SingleRate, newItem: SingleRate): Boolean {
-            return oldItem == newItem
+            return areItemsTheSame(oldItem, newItem)
         }
     }
 

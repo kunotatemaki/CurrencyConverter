@@ -11,7 +11,6 @@ import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBi
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
-import java.math.BigDecimal
 
 class ConversionFragment : BaseFragment() {
 
@@ -21,7 +20,15 @@ class ConversionFragment : BaseFragment() {
     private lateinit var viewModel: BaseViewModel
     private lateinit var adapter: ConversionAdapter
 
-    private val basePriceListener: BasePriceListener = BasePriceListener()
+    private val basePriceListener: BasePriceListener = object : BasePriceListener() {
+        override fun updateBasePrice(basePrice: String) {
+            viewModel.basePrice = basePrice
+        }
+
+        override fun getBasePrice(): String =
+            viewModel.basePrice
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,10 +56,9 @@ class ConversionFragment : BaseFragment() {
             .nonNull()
             .observe({ lifecycle }) {
                 if (adapter.hasSameBaseCurrency(it.list)) {
-                    binding.ratesList.updatePriceViewsWithoutRepainting(it.list, basePriceListener.basePrice)
-                } else {
-                    adapter.submitList(it.list)
+                    binding.ratesList.updatePriceViewsWithoutRepainting(it.list)
                 }
+                adapter.submitList(it.list)
             }
 
         binding.testButton.setOnClickListener {

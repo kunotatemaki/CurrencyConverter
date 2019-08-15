@@ -13,13 +13,19 @@ class SingleRateViewHolder(private val binding: RateItemBinding) :
         item: SingleRate,
         basePriceListener: BasePriceListener
     ) {
-        binding.currencyPrice.removeTextChangedListener(basePriceListener.textWatcher)
-        binding.singleRate = item
-        binding.basePrice = basePriceListener.basePrice
-        binding.currencyPrice.tag = item.code
+        binding.currencyPriceEditable.removeTextChangedListener(basePriceListener.textWatcher)
+        binding.code = item.code
+        val isBasePrice = position == 0
+        binding.price = if(isBasePrice){
+            basePriceListener.getBasePrice()
+        }else{
+            item.price
+        }
+        binding.isBasePrice = position == 0
+        binding.currencyPriceNonEditable.tag = item.code
         binding.executePendingBindings()
         if (position == 0) {
-            binding.currencyPrice?.apply {
+            binding.currencyPriceEditable?.apply {
                 addTextChangedListener(basePriceListener.textWatcher)
                 setSelection(this.text.length)
             }
