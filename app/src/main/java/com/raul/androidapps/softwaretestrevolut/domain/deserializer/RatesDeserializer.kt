@@ -1,33 +1,50 @@
 package com.raul.androidapps.softwaretestrevolut.domain.deserializer
 
-import com.google.gson.*
-import com.google.gson.reflect.TypeToken
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonParseException
 import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
+import com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate
 import java.lang.reflect.Type
+
 
 class RatesDeserializer : JsonDeserializer<Rates> {
 
-    @Throws(JsonParseException::class)
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Rates {
-        var base = ""
-        var date = ""
-        var currencyRates:  Map<String, Double>? = null
+    override fun deserialize(
+        json: JsonElement,
+        typeOfT: Type,
+        context: JsonDeserializationContext
+    ): Rates? =
 
-        if (json.isJsonObject) {
-            val jsonObject = json.asJsonObject
-            if (jsonObject.get("base")?.isJsonPrimitive == true) {
-                 base = jsonObject.get("base")?.asString ?: ""
-            }
-            if (jsonObject.get("date")?.isJsonPrimitive == true) {
-                 date = jsonObject.get("date")?.asString ?: ""
-            }
-            if (jsonObject.get("rates").isJsonObject) {
-                val type = object : TypeToken<Map<String, Double>>() {}.type
-                currencyRates = Gson().fromJson(jsonObject.get("rates"), type)
+        try {
+            val listOfRates: MutableList<SingleRate> = mutableListOf()
+            val base: String
+            if (json.isJsonObject) {
+                val jsonObject = json.asJsonObject
+                if (jsonObject.get("base").isJsonPrimitive) {
+                    base = jsonObject.get("base")?.asString
+                        ?: throw JsonParseException("Error parsing response: no base value included")
+                } else {
+                    throw JsonParseException("Error parsing response: base value not an String")
+                }
+                listOfRates.add(SingleRate(base, 1.toBigDecimal()))
+                if (jsonObject.get("rates").isJsonObject) {
+                    jsonObject.get("rates").asJsonObject?.let { rates ->
+                        listOfRates.addAll(
+                            rates.entrySet().map { SingleRate(it.key, it.value.asBigDecimal) }
+                        )
+                    }
+                } else {
+                    throw JsonParseException("Error parsing response: no rates value included")
+                }
+                Rates(listOfRates)
+            } else {
+                throw JsonParseException("Error parsing response: no value included")
             }
 
+        } catch (e: JsonParseException) {
+            null
         }
-        return Rates(base, date, currencyRates)
-    }
 
 }

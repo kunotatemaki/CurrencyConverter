@@ -1,23 +1,16 @@
 package com.raul.androidapps.softwaretestrevolut.domain.model
 
-import java.lang.NumberFormatException
+import java.math.BigDecimal
 
 
 data class SingleRate constructor(
     val code: String,
-    val rate: Double,
-    val price: String
-){
+    val rate: BigDecimal
+) {
 
-    companion object {
-        fun calculatePrice(rate: Double, basePrice: String): String {
-            val basePriceConverted = try{
-                basePrice.toDouble()
-            }catch (e: NumberFormatException){
-                return ""
-            }
-            //todo convert to proper format
-            return (rate * basePriceConverted).toString()
-        }
+    fun calculatePrice(basePrice: BigDecimal): String {
+        //todo convert to proper format
+        return (rate * basePrice).toString()
     }
+
 }

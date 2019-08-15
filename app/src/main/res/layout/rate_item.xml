@@ -8,6 +8,9 @@
         <variable
                 name="singleRate"
                 type="com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate" />
+        <variable
+                name="basePrice"
+                type="java.math.BigDecimal" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,7 +32,7 @@
         <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{singleRate.price}"
+                android:text="@{singleRate.calculatePrice(basePrice)}"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"

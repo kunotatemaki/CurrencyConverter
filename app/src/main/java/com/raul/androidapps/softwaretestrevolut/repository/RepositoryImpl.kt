@@ -12,7 +12,7 @@ class RepositoryImpl @Inject constructor(private val networkServiceFactory: Netw
 
     override suspend fun getRates(base: String): Resource<Rates> {
         val resp = networkServiceFactory.getServiceInstance().getLatestRatesWithCoroutines(base)
-        return if(resp.isSuccessful){
+        return if(resp.isSuccessful && resp.body()?.list?.isNotEmpty() == true){
             Resource.success(resp.body())
         }else{
             Resource.error(resp.message(), null)

@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface RevolutApi {
 
     @GET("latest")
-    suspend fun getLatestRatesWithCoroutines(@Query("base") base: String): Response<Rates>
+    suspend fun getLatestRatesWithCoroutines(@Query("base") base: String): Response<Rates?>
 
     //todo same with RxJava
 

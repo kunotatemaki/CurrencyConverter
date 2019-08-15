@@ -11,7 +11,6 @@ import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBi
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
-import timber.log.Timber
 
 class ConversionFragment : BaseFragment(), (String) -> Unit {
 
@@ -39,9 +38,7 @@ class ConversionFragment : BaseFragment(), (String) -> Unit {
         viewModel.getRates()
             .nonNull()
             .observe({lifecycle}){
-                val list = it.toListOfSingleRates("100")
-                Timber.d("rukia Recibido rates ${it.base}")
-                adapter.submitList(list)
+                adapter.submitList(it.list)
         }
 
         binding.testButton.setOnClickListener {
