@@ -1,35 +1,41 @@
 package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
 import androidx.annotation.VisibleForTesting
-import androidx.lifecycle.viewModelScope
 import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
 import com.raul.androidapps.softwaretestrevolut.network.Resource
 import com.raul.androidapps.softwaretestrevolut.repository.Repository
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class CoroutineViewModel @Inject constructor(private val repository: Repository) :
     BaseViewModel() {
 
 
-    private lateinit var job: Job
+    private var viewModelJob = SupervisorJob()
+    private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private lateinit var fetchingJob: Job
 
     override fun startFetchingRates() {
-        job = startFetchingRatesAsync(baseCurrency)
+        startFetchingRatesAsync(baseCurrency)
     }
 
     override fun stopFetchingRates() {
-        job.cancel()
+        fetchingJob.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 
     @VisibleForTesting
-    fun startFetchingRatesAsync(base: String): Job =
-        viewModelScope.launch(Dispatchers.IO) {
+    fun startFetchingRatesAsync(base: String): Job {
+        fetchingJob = Job(viewModelJob)
+        return viewModelScope.launch(Dispatchers.IO + fetchingJob) {
             while (true) {
+                Timber.d("rukia fetching")
                 val ratesResponse = repository.getRates(base)
                 if (ratesResponse.status == Resource.Status.SUCCESS) {
                     updateObservableAsync(ratesResponse.data)
@@ -37,6 +43,7 @@ class CoroutineViewModel @Inject constructor(private val repository: Repository)
                 delay(1000)
             }
         }
+    }
 
     private fun updateObservableAsync(rates: Rates?): Job =
         viewModelScope.launch(Dispatchers.Default) {
