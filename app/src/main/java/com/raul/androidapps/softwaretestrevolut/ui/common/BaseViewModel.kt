@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
 import com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate
 import com.raul.androidapps.softwaretestrevolut.utils.RevolutConstants
+import java.util.*
 
 abstract class BaseViewModel : ViewModel() {
 
@@ -25,7 +26,7 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     protected fun getNewRatesSorted(rates: Rates?): Rates? {
-        rates?.getListWithCalculatedPrices(basePrice)
+        rates?.getListWithCalculatedPrices(basePrice, Locale.getDefault())
         val oldRates = ratesObservable.value
         if(oldRates == null){
             return rates

@@ -1,14 +1,18 @@
 package com.raul.androidapps.softwaretestrevolut.domain.model
 
+import androidx.annotation.VisibleForTesting
 import com.google.gson.annotations.JsonAdapter
 import com.raul.androidapps.softwaretestrevolut.domain.deserializer.RatesDeserializer
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
+import kotlin.math.truncate
 
 @JsonAdapter(RatesDeserializer::class)
 data class Rates constructor(
     val list: List<SingleRate>
 ) {
-    fun getListWithCalculatedPrices(basePrice: String) {
+    fun getListWithCalculatedPrices(basePrice: String, locale: Locale) {
         val basePriceConverted = try {
             basePrice.toBigDecimal()
         } catch (e: NumberFormatException) {
@@ -16,9 +20,15 @@ data class Rates constructor(
         }
         list.forEach {
             val price = it.rate * basePriceConverted
-            it.price = String.format(Locale.getDefault(), "%.2f", price)
-                .replaceFirst(".00".toRegex(), "")
+            it.price = formatPrice(price, locale)
         }
+    }
+
+    companion object {
+        @VisibleForTesting
+        fun formatPrice(price: BigDecimal, locale: Locale): String =
+            String.format(locale, "%.2f", price.setScale(2, RoundingMode.DOWN))
+                .replaceFirst(".00".toRegex(), "")
     }
 
 }
