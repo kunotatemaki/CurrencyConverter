@@ -45,7 +45,8 @@ class CoroutineViewModel @Inject constructor(private val repository: Repository)
         }
     }
 
-    private fun updateObservableAsync(rates: Rates?): Job =
+    @VisibleForTesting
+    fun updateObservableAsync(rates: Rates?): Job =
         viewModelScope.launch(Dispatchers.Default) {
             val sortedRates = getNewRatesSorted(rates)
             ratesObservable.postValue(sortedRates)
