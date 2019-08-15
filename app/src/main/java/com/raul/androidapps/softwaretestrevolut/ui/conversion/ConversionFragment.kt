@@ -78,6 +78,9 @@ class ConversionFragment : BaseFragment() {
         viewModel.getRates()
             .nonNull()
             .observe({ lifecycle }) { rates ->
+                if(rates.list.isNotEmpty()){
+                    binding.progressCircular.visibility = View.GONE
+                }
                 adapter.submitList(rates.list)
                 if (adapter.hasSameBaseCurrency(rates.list.firstOrNull { it.isBasePrice })) {
                     binding.ratesList.updatePriceViewsWithoutRepainting(rates.list)
