@@ -31,12 +31,11 @@ class ConversionAdapter(
     }
 
     override fun onBindViewHolder(holder: SingleRateViewHolder, position: Int) {
-        holder.bind(position, getItem(position), basePriceListener)
+        holder.bind(getItem(position), basePriceListener)
     }
 
-    fun hasSameBaseCurrency(list: List<SingleRate>): Boolean {
+    fun hasSameBaseCurrency(newBaseCurrency: SingleRate?): Boolean {
         if (itemCount == 0) return false
-        val newBaseCurrency = list.firstOrNull()
         val oldBaseCurrency = getItem(0)
         return oldBaseCurrency != null && newBaseCurrency != null && oldBaseCurrency == newBaseCurrency
     }
@@ -47,7 +46,7 @@ class ConversionAdapter(
         }
 
         override fun areContentsTheSame(oldItem: SingleRate, newItem: SingleRate): Boolean {
-            return areItemsTheSame(oldItem, newItem)
+            return oldItem.code == newItem.code && oldItem.isBasePrice == newItem.isBasePrice
         }
     }
 

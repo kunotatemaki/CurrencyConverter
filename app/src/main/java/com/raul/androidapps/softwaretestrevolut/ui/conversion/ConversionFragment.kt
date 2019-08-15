@@ -28,6 +28,12 @@ class ConversionFragment : BaseFragment() {
         override fun getBasePrice(): String =
             viewModel.basePrice
 
+        override fun onItemClicked(code: String, basePrice: String) {
+            viewModel.changeCurrency(code)
+            updateBasePrice(basePrice)
+            //todo scroll to top
+        }
+
     }
 
     override fun onCreateView(
@@ -54,11 +60,11 @@ class ConversionFragment : BaseFragment() {
 
         viewModel.getRates()
             .nonNull()
-            .observe({ lifecycle }) {
-                if (adapter.hasSameBaseCurrency(it.list)) {
-                    binding.ratesList.updatePriceViewsWithoutRepainting(it.list)
+            .observe({ lifecycle }) { rates ->
+                if (adapter.hasSameBaseCurrency(rates.list.firstOrNull { it.isBasePrice })) {
+                    binding.ratesList.updatePriceViewsWithoutRepainting(rates.list)
                 }
-                adapter.submitList(it.list)
+                adapter.submitList(rates.list)
             }
 
         binding.testButton.setOnClickListener {

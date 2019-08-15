@@ -9,29 +9,29 @@ class SingleRateViewHolder(private val binding: RateItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        position: Int,
         item: SingleRate,
         basePriceListener: BasePriceListener
     ) {
         binding.currencyPriceEditable.removeTextChangedListener(basePriceListener.textWatcher)
         binding.code = item.code
-        val isBasePrice = position == 0
-        binding.price = if(isBasePrice){
+        binding.price = if(item.isBasePrice){
             basePriceListener.getBasePrice()
         }else{
             item.price
         }
-        binding.isBasePrice = position == 0
+        binding.isBasePrice = item.isBasePrice
         binding.currencyPriceNonEditable.tag = item.code
         binding.executePendingBindings()
-        if (position == 0) {
+        if (item.isBasePrice) {
             binding.currencyPriceEditable?.apply {
                 addTextChangedListener(basePriceListener.textWatcher)
                 setSelection(this.text.length)
             }
             binding.root.setOnClickListener(null)
         } else {
-            binding.root.setOnClickListener(null)
+            binding.root.setOnClickListener{
+                basePriceListener.onItemClicked(item.code, item.price)
+            }
         }
 
 

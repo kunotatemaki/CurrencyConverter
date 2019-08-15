@@ -35,5 +35,6 @@ abstract class BasePriceListener {
 
     abstract fun updateBasePrice(basePrice: String)
     abstract fun getBasePrice(): String
+    abstract fun onItemClicked(code: String, basePrice: String)
 
 }

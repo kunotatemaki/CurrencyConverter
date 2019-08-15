@@ -28,11 +28,23 @@ class RatesDeserializer : JsonDeserializer<Rates> {
                 } else {
                     throw JsonParseException("Error parsing response: base value not an String")
                 }
-                listOfRates.add(SingleRate(base, 1.toBigDecimal()))
+                listOfRates.add(
+                    SingleRate(
+                        code = base,
+                        rate = 1.toBigDecimal(),
+                        isBasePrice = true
+                    )
+                )
                 if (jsonObject.get("rates").isJsonObject) {
                     jsonObject.get("rates").asJsonObject?.let { rates ->
                         listOfRates.addAll(
-                            rates.entrySet().map { SingleRate(it.key, it.value.asBigDecimal) }
+                            rates.entrySet().map {
+                                SingleRate(
+                                    code = it.key,
+                                    rate = it.value.asBigDecimal,
+                                    isBasePrice = false
+                                )
+                            }
                         )
                     }
                 } else {
