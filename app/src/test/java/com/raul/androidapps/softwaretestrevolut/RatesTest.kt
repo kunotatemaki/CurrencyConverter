@@ -24,6 +24,7 @@ class RatesTest {
         )
         rates = Rates(list)
     }
+
     @Test
     fun testCalculatePricesCorrectBasePrice() {
         rates.getListWithCalculatedPrices(basePrice.toString(), Locale.UK)
@@ -48,7 +49,5 @@ class RatesTest {
         assertEquals(priceWithTwoDecimals, "23.28")
         val priceWithThreeDecimal = Rates.formatPrice(23.229.toBigDecimal(), Locale.UK)
         assertEquals(priceWithThreeDecimal, "23.22")
-//        assertEquals(rates.list[1].price, "27,54")
-//        assertEquals(rates.list[2].price, "34,27")
     }
 }
