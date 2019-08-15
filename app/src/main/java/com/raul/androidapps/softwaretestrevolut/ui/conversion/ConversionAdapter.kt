@@ -9,10 +9,12 @@ import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.BindingComponent
 import com.raul.androidapps.softwaretestrevolut.databinding.RateItemBinding
 import com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate
+import com.raul.androidapps.softwaretestrevolut.resources.ResourcesManager
 
 
 class ConversionAdapter(
     private val basePriceListener: BasePriceListener,
+    private val resourcesManager: ResourcesManager,
     private val bindingComponent: BindingComponent
 ) :
     ListAdapter<SingleRate, SingleRateViewHolder>(SingleRateDiffCallback()) {
@@ -27,7 +29,7 @@ class ConversionAdapter(
                 false,
                 bindingComponent
             )
-        return SingleRateViewHolder(binding)
+        return SingleRateViewHolder(binding, resourcesManager)
     }
 
     override fun onBindViewHolder(holder: SingleRateViewHolder, position: Int) {

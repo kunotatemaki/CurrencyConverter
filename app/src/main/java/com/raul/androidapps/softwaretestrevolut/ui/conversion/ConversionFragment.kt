@@ -36,7 +36,6 @@ class ConversionFragment : BaseFragment() {
         override fun onItemClicked(code: String, basePrice: String) {
             viewModel.changeCurrency(code)
             updateBasePrice(basePrice)
-            //todo scroll to top
         }
 
     }
@@ -62,7 +61,7 @@ class ConversionFragment : BaseFragment() {
         //todo decide which one to use (pass as an argument)
         viewModel =
             ViewModelProviders.of(this, viewModelFactory).get(CoroutineViewModel::class.java)
-        adapter = ConversionAdapter(basePriceListener, bindingComponent)
+        adapter = ConversionAdapter(basePriceListener, resourcesManager, bindingComponent)
 
         binding.ratesList.apply {
             this@apply.adapter = this@ConversionFragment.adapter
