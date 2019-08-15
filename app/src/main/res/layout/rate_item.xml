@@ -18,6 +18,7 @@
             android:layout_height="wrap_content">
 
         <TextView
+                android:id="@+id/currencyCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{singleRate.code}"
@@ -30,6 +31,7 @@
                 tools:text="EUR" />
 
         <EditText
+                android:id="@+id/currencyPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{singleRate.calculatePrice(basePrice)}"
@@ -40,7 +42,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="100.87"/>
+                tools:text="100.87"
+                android:importantForAutofill="no" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
