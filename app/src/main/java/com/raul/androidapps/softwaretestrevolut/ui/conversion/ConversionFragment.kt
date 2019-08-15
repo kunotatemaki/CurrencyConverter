@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.raul.androidapps.softwaretestrevolut.R
@@ -62,8 +63,14 @@ class ConversionFragment : BaseFragment() {
         viewModel =
             ViewModelProviders.of(this, viewModelFactory).get(CoroutineViewModel::class.java)
         adapter = ConversionAdapter(basePriceListener, bindingComponent)
-        binding.ratesList.adapter = adapter
 
+        binding.ratesList.apply {
+            this@apply.adapter = this@ConversionFragment.adapter
+            val dividerItemDecoration = DividerItemDecoration(
+                context, LinearLayoutManager.VERTICAL
+            )
+            addItemDecoration(dividerItemDecoration)
+        }
         smoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
                 return SNAP_TO_START
