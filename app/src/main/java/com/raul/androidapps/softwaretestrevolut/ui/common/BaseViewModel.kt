@@ -11,18 +11,18 @@ import java.util.*
 abstract class BaseViewModel : ViewModel() {
 
     protected val ratesObservable: MutableLiveData<Rates> = MutableLiveData()
+    @get:Synchronized
     protected var baseCurrency: String = RevolutConstants.DEFAULT_CURRENCY
+
     var basePrice: String = "0"
 
     fun getRates(): LiveData<Rates> = ratesObservable
 
-    abstract fun startFetchingRates()
+    abstract fun startFetchingRatesAsync()
     abstract fun stopFetchingRates()
 
     fun changeCurrency(base: String) {
-        stopFetchingRates()
         baseCurrency = base
-        startFetchingRates()
     }
 
     protected fun getNewRatesSorted(rates: Rates?): Rates? {

@@ -28,7 +28,7 @@ class NavigationTest {
         val selectorScenario = launchFragmentInContainer<SelectorFragment>(null, R.style.AppTheme)
 
         // Set the NavController property on the fragment
-        Scenario.onFragment { fragment ->
+        selectorScenario.onFragment { fragment ->
             Navigation.setViewNavController(fragment.requireView(), mockNavController)
         }
 

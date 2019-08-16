@@ -16,10 +16,6 @@ class CoroutineViewModel @Inject constructor(private val repository: Repository)
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
     private lateinit var fetchingJob: Job
 
-    override fun startFetchingRates() {
-        startFetchingRatesAsync(baseCurrency)
-    }
-
     override fun stopFetchingRates() {
         fetchingJob.cancel()
     }
@@ -29,12 +25,11 @@ class CoroutineViewModel @Inject constructor(private val repository: Repository)
         viewModelJob.cancel()
     }
 
-    @VisibleForTesting
-    fun startFetchingRatesAsync(base: String): Job {
+    override fun startFetchingRatesAsync() {
         fetchingJob = Job(viewModelJob)
-        return viewModelScope.launch(Dispatchers.IO + fetchingJob) {
+        viewModelScope.launch(Dispatchers.IO + fetchingJob) {
             while (true) {
-                val ratesResponse = repository.getRatesWithCoroutines(base)
+                val ratesResponse = repository.getRatesWithCoroutines(baseCurrency)
                 if (ratesResponse.status == Resource.Status.SUCCESS) {
                     updateObservableAsync(ratesResponse.data)
                 }

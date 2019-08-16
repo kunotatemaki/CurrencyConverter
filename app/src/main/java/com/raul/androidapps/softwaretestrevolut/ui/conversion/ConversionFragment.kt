@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBinding
-import com.raul.androidapps.softwaretestrevolut.databinding.MainActivityBinding
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.MainActivity
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
@@ -96,6 +96,12 @@ class ConversionFragment : BaseFragment() {
                 context, LinearLayoutManager.VERTICAL
             )
             addItemDecoration(dividerItemDecoration)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    (activity as? MainActivity)?.hideKeyboard()
+                }
+            })
         }
         smoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
@@ -125,7 +131,7 @@ class ConversionFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.startFetchingRates()
+        viewModel.startFetchingRatesAsync()
     }
 
     override fun onPause() {

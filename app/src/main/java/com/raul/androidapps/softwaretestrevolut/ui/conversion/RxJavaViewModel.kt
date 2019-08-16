@@ -22,11 +22,6 @@ class RxJavaViewModel @Inject constructor(private val repository: Repository) :
     private val disposableComposer: CompositeDisposable = CompositeDisposable()
     private lateinit var disposableFetch: DisposableObserver<Rates?>
 
-    override fun startFetchingRates() {
-
-        startFetchingRatesAsync(baseCurrency)
-    }
-
     override fun stopFetchingRates() {
         disposableFetch.dispose()
         disposableComposer.remove(disposableFetch)
@@ -37,8 +32,7 @@ class RxJavaViewModel @Inject constructor(private val repository: Repository) :
         disposableComposer.clear()
     }
 
-    @VisibleForTesting
-    fun startFetchingRatesAsync(base: String) {
+    override fun startFetchingRatesAsync() {
         disposableFetch = object : DisposableObserver<Rates?>() {
             override fun onComplete() {}
             override fun onNext(rates: Rates) {
@@ -47,7 +41,7 @@ class RxJavaViewModel @Inject constructor(private val repository: Repository) :
             override fun onError(e: Throwable) {}
         }
         Observable.interval(1, TimeUnit.SECONDS, Schedulers.io())
-            .flatMapSingle { repository.getRatesWithRxJava(base) }
+            .flatMapSingle { repository.getRatesWithRxJava(baseCurrency) }
             .doOnError {
                 Timber.d("Error Fetching conversion rates")
             }

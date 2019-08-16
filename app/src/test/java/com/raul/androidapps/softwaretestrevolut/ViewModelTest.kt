@@ -104,7 +104,8 @@ class ViewModelTest {
                 .thenReturn(
                     Resource.success(newRates)
                 )
-            val job = coroutineViewModel.startFetchingRatesAsync(currency)
+            coroutineViewModel.changeCurrency(currency)
+            coroutineViewModel.startFetchingRatesAsync()
             delay(2000)
 
             Mockito.verify(repository, atLeast(1)).getRatesWithCoroutines(currency)
@@ -123,7 +124,8 @@ class ViewModelTest {
                 Single.just(newRates)
             )
 
-        rxJavaViewModel.startFetchingRatesAsync(currency)
+        rxJavaViewModel.changeCurrency(currency)
+        rxJavaViewModel.startFetchingRatesAsync()
 
         Thread.sleep(2000)
         Mockito.verify(repository, atLeast(1)).getRatesWithRxJava(currency)
