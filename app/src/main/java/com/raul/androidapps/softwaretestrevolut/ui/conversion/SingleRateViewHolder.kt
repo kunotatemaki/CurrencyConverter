@@ -35,7 +35,11 @@ class SingleRateViewHolder(
                 addTextChangedListener(basePriceListener.textWatcher)
                 setSelection(this.text.length)
             }
-            binding.root.setOnClickListener(null)
+            binding.root.apply{
+                setOnClickListener(null)
+                isClickable = false
+                isFocusable= false
+            }
         } else {
            binding.root.setOnClickListener {
                 val price = binding.currencyPriceNonEditable.text.toString()
