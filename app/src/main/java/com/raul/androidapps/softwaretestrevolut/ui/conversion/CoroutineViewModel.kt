@@ -6,7 +6,6 @@ import com.raul.androidapps.softwaretestrevolut.network.Resource
 import com.raul.androidapps.softwaretestrevolut.repository.Repository
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
 import kotlinx.coroutines.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class CoroutineViewModel @Inject constructor(private val repository: Repository) :
@@ -35,7 +34,6 @@ class CoroutineViewModel @Inject constructor(private val repository: Repository)
         fetchingJob = Job(viewModelJob)
         return viewModelScope.launch(Dispatchers.IO + fetchingJob) {
             while (true) {
-                Timber.d("rukia fetching")
                 val ratesResponse = repository.getRatesWithCoroutines(base)
                 if (ratesResponse.status == Resource.Status.SUCCESS) {
                     updateObservableAsync(ratesResponse.data)
