@@ -22,6 +22,7 @@ class SingleRateViewHolder(
         if (item.isBasePrice) {
             binding.price = basePriceListener.getBasePrice()
             binding.textColor = resourcesManager.getColor(R.color.colorPrimary)
+            binding.currencyPriceEditable.findFocus()
         } else {
             binding.textColor = resourcesManager.getColor(android.R.color.darker_gray)
             binding.price = item.price

@@ -91,13 +91,13 @@ class ViewModelTest {
                 .thenReturn(
                     Response.success(newRates)
                 )
-            Mockito.`when`(repository.getRates(currency))
+            Mockito.`when`(repository.getRatesWithCoroutines(currency))
                 .thenReturn(
                     Resource.success(newRates)
                 )
             val job = coroutineViewModel.startFetchingRatesAsync(currency)
 
-            Mockito.verify(repository).getRates(currency)
+            Mockito.verify(repository).getRatesWithCoroutines(currency)
         }
     }
 }

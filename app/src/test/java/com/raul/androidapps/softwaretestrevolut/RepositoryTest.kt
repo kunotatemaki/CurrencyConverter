@@ -59,7 +59,7 @@ class RepositoryTest {
                 .thenReturn(
                     Response.success(rates)
                 )
-            val response = repository.getRates(currency)
+            val response = repository.getRatesWithCoroutines(currency)
             assertEquals(response.status, Resource.Status.SUCCESS)
             assertEquals(response.data, rates)
         }
@@ -73,7 +73,7 @@ class RepositoryTest {
                 .thenReturn(
                     Response.error(404, "".toResponseBody(null))
                 )
-            val response = repository.getRates(currency)
+            val response = repository.getRatesWithCoroutines(currency)
             assertEquals(response.status, Resource.Status.ERROR)
             assertEquals(response.data, null)
         }

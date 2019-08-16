@@ -36,7 +36,7 @@ class CoroutineViewModel @Inject constructor(private val repository: Repository)
         return viewModelScope.launch(Dispatchers.IO + fetchingJob) {
             while (true) {
                 Timber.d("rukia fetching")
-                val ratesResponse = repository.getRates(base)
+                val ratesResponse = repository.getRatesWithCoroutines(base)
                 if (ratesResponse.status == Resource.Status.SUCCESS) {
                     updateObservableAsync(ratesResponse.data)
                 }

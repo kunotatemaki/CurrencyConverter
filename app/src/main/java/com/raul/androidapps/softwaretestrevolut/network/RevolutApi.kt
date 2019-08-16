@@ -12,6 +12,6 @@ interface RevolutApi {
     suspend fun getLatestRatesWithCoroutines(@Query("base") base: String): Response<Rates?>
 
     @GET("latest")
-    suspend fun getLatestRatesWithRxJava(@Query("base") base: String): Single<Rates?>
+    fun getLatestRatesWithRxJava(@Query("base") base: String): Single<Rates?>
 
 }

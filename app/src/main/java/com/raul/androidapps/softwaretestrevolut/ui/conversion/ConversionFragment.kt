@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBinding
+import com.raul.androidapps.softwaretestrevolut.databinding.MainActivityBinding
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
+import com.raul.androidapps.softwaretestrevolut.ui.MainActivity
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
 
@@ -40,6 +42,7 @@ class ConversionFragment : BaseFragment() {
             viewModel.basePrice
 
         override fun onItemClicked(code: String, basePrice: String) {
+            (activity as? MainActivity)?.hideKeyboard()
             viewModel.changeCurrency(code)
             updateBasePrice(basePrice)
         }
