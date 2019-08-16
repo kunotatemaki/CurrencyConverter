@@ -25,6 +25,12 @@ class ConversionFragment : BaseFragment() {
     private lateinit var viewModel: BaseViewModel
     private lateinit var adapter: ConversionAdapter
 
+    private enum class MultiThreadingMethod {
+        COROUTINES, RX_JAVA
+    }
+
+    private lateinit var threading: MultiThreadingMethod
+
     private val basePriceListener: BasePriceListener = object : BasePriceListener() {
         override fun updateBasePrice(basePrice: String) {
             viewModel.basePrice = basePrice
@@ -42,6 +48,18 @@ class ConversionFragment : BaseFragment() {
 
     private lateinit var smoothScroller: LinearSmoothScroller
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.apply {
+            val safeArgs = ConversionFragmentArgs.fromBundle(this)
+            threading = if (safeArgs.coroutines) {
+                MultiThreadingMethod.COROUTINES
+            } else {
+                MultiThreadingMethod.RX_JAVA
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,9 +76,15 @@ class ConversionFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //todo decide which one to use (pass as an argument)
-        viewModel =
-            ViewModelProviders.of(this, viewModelFactory).get(CoroutineViewModel::class.java)
+        viewModel = when (threading) {
+            MultiThreadingMethod.COROUTINES -> ViewModelProviders.of(this, viewModelFactory).get(
+                CoroutineViewModel::class.java
+            )
+            MultiThreadingMethod.RX_JAVA -> ViewModelProviders.of(this, viewModelFactory).get(
+                RxJavaViewModel::class.java
+            )
+        }
+
         adapter = ConversionAdapter(basePriceListener, resourcesManager, bindingComponent)
 
         binding.ratesList.apply {
@@ -78,7 +102,7 @@ class ConversionFragment : BaseFragment() {
         viewModel.getRates()
             .nonNull()
             .observe({ lifecycle }) { rates ->
-                if(rates.list.isNotEmpty()){
+                if (rates.list.isNotEmpty()) {
                     binding.progressCircular.visibility = View.GONE
                 }
                 adapter.submitList(rates.list)

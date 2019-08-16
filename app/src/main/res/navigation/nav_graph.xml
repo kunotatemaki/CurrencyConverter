@@ -3,10 +3,25 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/nav_graph"
-            app:startDestination="@id/conversion_fragment">
+            app:startDestination="@id/selectorFragment">
 
     <fragment android:id="@+id/conversion_fragment"
               android:name="com.raul.androidapps.softwaretestrevolut.ui.conversion.ConversionFragment"
-              android:label="conversion_fragment" tools:layout="@layout/conversion_fragment"/>
+              android:label="conversion_fragment" tools:layout="@layout/conversion_fragment">
+        <argument
+                android:name="coroutines"
+                app:argType="boolean"/>
+    </fragment>
+    <fragment
+            android:id="@+id/selectorFragment"
+            android:name="com.raul.androidapps.softwaretestrevolut.ui.selector.SelectorFragment"
+            android:label="SelectorFragment"
+            tools:layout="@layout/fragment_selector">
+        <action
+                android:id="@+id/action_selectorFragment_to_conversion_fragment"
+                app:destination="@id/conversion_fragment"
+                app:launchSingleTop="true"
+                app:popUpTo="@+id/selectorFragment" />
+    </fragment>
 
 </navigation>
