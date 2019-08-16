@@ -8,6 +8,11 @@ import com.raul.androidapps.softwaretestrevolut.network.Resource
 import com.raul.androidapps.softwaretestrevolut.network.RevolutApi
 import com.raul.androidapps.softwaretestrevolut.repository.Repository
 import com.raul.androidapps.softwaretestrevolut.ui.conversion.CoroutineViewModel
+import com.raul.androidapps.softwaretestrevolut.ui.conversion.RxJavaViewModel
+import io.reactivex.Single
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -16,6 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.atLeast
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
@@ -37,6 +43,7 @@ class ViewModelTest {
     private lateinit var oldRates: Rates
     private lateinit var newRates: Rates
     private lateinit var coroutineViewModel: CoroutineViewModel
+    private lateinit var rxJavaViewModel: RxJavaViewModel
     private val currency = "EUR"
 
 
@@ -56,11 +63,13 @@ class ViewModelTest {
         newRates = Rates(newList)
         MockitoAnnotations.initMocks(this)
         coroutineViewModel = CoroutineViewModel(repository)
+        rxJavaViewModel = RxJavaViewModel(repository)
 
         Mockito.`when`(networkServiceFactory.getServiceInstance())
             .thenReturn(
                 api
             )
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { scheduler -> Schedulers.trampoline() }
 
     }
 
@@ -96,8 +105,28 @@ class ViewModelTest {
                     Resource.success(newRates)
                 )
             val job = coroutineViewModel.startFetchingRatesAsync(currency)
+            delay(2000)
 
-            Mockito.verify(repository).getRatesWithCoroutines(currency)
+            Mockito.verify(repository, atLeast(1)).getRatesWithCoroutines(currency)
         }
+    }
+
+    @Test
+    fun testCallRepositoryRxJava() {
+
+        Mockito.`when`(api.getLatestRatesWithRxJava(currency))
+            .thenReturn(
+                Single.just(newRates)
+            )
+        Mockito.`when`(repository.getRatesWithRxJava(currency))
+            .thenReturn(
+                Single.just(newRates)
+            )
+
+        rxJavaViewModel.startFetchingRatesAsync(currency)
+
+        Thread.sleep(2000)
+        Mockito.verify(repository, atLeast(1)).getRatesWithRxJava(currency)
+
     }
 }

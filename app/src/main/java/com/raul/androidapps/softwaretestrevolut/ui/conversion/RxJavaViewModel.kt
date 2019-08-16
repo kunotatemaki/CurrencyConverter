@@ -23,17 +23,6 @@ class RxJavaViewModel @Inject constructor(private val repository: Repository) :
     private lateinit var disposableFetch: DisposableObserver<Rates?>
 
     override fun startFetchingRates() {
-        disposableFetch = object : DisposableObserver<Rates?>() {
-
-            override fun onComplete() {}
-
-            override fun onNext(rates: Rates) {
-                updateObservableAsync(rates)
-            }
-
-            override fun onError(e: Throwable) {}
-
-        }
 
         startFetchingRatesAsync(baseCurrency)
     }
@@ -50,6 +39,13 @@ class RxJavaViewModel @Inject constructor(private val repository: Repository) :
 
     @VisibleForTesting
     fun startFetchingRatesAsync(base: String) {
+        disposableFetch = object : DisposableObserver<Rates?>() {
+            override fun onComplete() {}
+            override fun onNext(rates: Rates) {
+                updateObservableAsync(rates)
+            }
+            override fun onError(e: Throwable) {}
+        }
         Observable.interval(1, TimeUnit.SECONDS, Schedulers.io())
             .flatMapSingle { repository.getRatesWithRxJava(base) }
             .doOnError {
