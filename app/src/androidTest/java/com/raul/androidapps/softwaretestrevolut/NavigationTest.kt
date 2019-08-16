@@ -25,10 +25,10 @@ class NavigationTest {
         val mockNavController = mock(NavController::class.java)
 
         // Create a graphical FragmentScenario for the TitleScreen
-        val titleScenario = launchFragmentInContainer<SelectorFragment>(null, R.style.AppTheme)
+        val selectorScenario = launchFragmentInContainer<SelectorFragment>(null, R.style.AppTheme)
 
         // Set the NavController property on the fragment
-        titleScenario.onFragment { fragment ->
+        Scenario.onFragment { fragment ->
             Navigation.setViewNavController(fragment.requireView(), mockNavController)
         }
 
@@ -44,10 +44,10 @@ class NavigationTest {
         val mockNavController = mock(NavController::class.java)
 
         // Create a graphical FragmentScenario for the TitleScreen
-        val titleScenario = launchFragmentInContainer<SelectorFragment>(null, R.style.AppTheme)
+        val selectorScenario = launchFragmentInContainer<SelectorFragment>(null, R.style.AppTheme)
 
         // Set the NavController property on the fragment
-        titleScenario.onFragment { fragment ->
+        selectorScenario.onFragment { fragment ->
             Navigation.setViewNavController(fragment.requireView(), mockNavController)
         }
 
