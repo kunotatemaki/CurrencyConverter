@@ -2,6 +2,7 @@ package com.raul.androidapps.softwaretestrevolut.network
 
 import com.raul.androidapps.softwaretestrevolut.network.NetworkServiceFactory.Companion.BASE_URL
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,6 +19,7 @@ class NetworkServiceFactoryImpl @Inject constructor(): NetworkServiceFactory {
 
     private fun buildNetworkService(): RevolutApi = Retrofit.Builder()
         .baseUrl(BASE_URL)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .addConverterFactory(GsonConverterFactory.create())
         .build().create(RevolutApi::class.java)
 
