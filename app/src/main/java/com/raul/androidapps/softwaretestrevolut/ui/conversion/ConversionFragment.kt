@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -24,14 +25,15 @@ class ConversionFragment : BaseFragment() {
 
     private lateinit var binding: ConversionFragmentBinding
 
-    private lateinit var viewModel: BaseViewModel
+    @VisibleForTesting
+    lateinit var viewModel: BaseViewModel
     private lateinit var adapter: ConversionAdapter
 
     private enum class MultiThreadingMethod {
         COROUTINES, RX_JAVA
     }
 
-    private lateinit var threading: MultiThreadingMethod
+    private var threading: MultiThreadingMethod = MultiThreadingMethod.COROUTINES
 
     private val basePriceListener: BasePriceListener = object : BasePriceListener() {
         override fun updateBasePrice(basePrice: String) {
@@ -79,13 +81,18 @@ class ConversionFragment : BaseFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = when (threading) {
-            MultiThreadingMethod.COROUTINES -> ViewModelProviders.of(this, viewModelFactory).get(
-                CoroutineViewModel::class.java
-            )
-            MultiThreadingMethod.RX_JAVA -> ViewModelProviders.of(this, viewModelFactory).get(
-                RxJavaViewModel::class.java
-            )
+        if(::viewModel.isInitialized.not()) {
+            viewModel = when (threading) {
+                MultiThreadingMethod.COROUTINES -> ViewModelProviders.of(
+                    this,
+                    viewModelFactory
+                ).get(
+                    CoroutineViewModel::class.java
+                )
+                MultiThreadingMethod.RX_JAVA -> ViewModelProviders.of(this, viewModelFactory).get(
+                    RxJavaViewModel::class.java
+                )
+            }
         }
 
         adapter = ConversionAdapter(basePriceListener, resourcesManager, bindingComponent)

@@ -1,6 +1,7 @@
 package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.LiveData
 import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
 import com.raul.androidapps.softwaretestrevolut.network.Resource
 import com.raul.androidapps.softwaretestrevolut.repository.Repository
@@ -8,7 +9,7 @@ import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class CoroutineViewModel @Inject constructor(private val repository: Repository) :
+open class CoroutineViewModel @Inject constructor(private val repository: Repository) :
     BaseViewModel() {
 
 
@@ -45,5 +46,13 @@ class CoroutineViewModel @Inject constructor(private val repository: Repository)
             ratesObservable.postValue(sortedRates)
         }
 
+    @VisibleForTesting
+    override fun getRates(): LiveData<Rates> {
+        return super.getRates()
+    }
 
+    @VisibleForTesting
+    override fun changeCurrency(base: String) {
+        super.changeCurrency(base)
+    }
 }

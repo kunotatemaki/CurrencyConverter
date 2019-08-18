@@ -2,8 +2,11 @@ package com.raul.androidapps.softwaretestrevolut.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.MainActivityBinding
 import dagger.android.support.DaggerAppCompatActivity
@@ -17,6 +20,16 @@ class MainActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.main_activity)
 
+        val navController = findNavController(R.id.fragment_container)
+        setupActionBarWithNavController(navController)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     fun hideKeyboard() {

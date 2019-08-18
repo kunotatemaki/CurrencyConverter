@@ -11,36 +11,39 @@ import java.util.*
 abstract class BaseViewModel : ViewModel() {
 
     protected val ratesObservable: MutableLiveData<Rates> = MutableLiveData()
+
     @get:Synchronized
     protected var baseCurrency: String = RevolutConstants.DEFAULT_CURRENCY
 
     var basePrice: String = "0"
 
-    fun getRates(): LiveData<Rates> = ratesObservable
+    open fun getRates(): LiveData<Rates> = ratesObservable
 
     abstract fun startFetchingRatesAsync()
     abstract fun stopFetchingRates()
 
-    fun changeCurrency(base: String) {
+    open fun changeCurrency(base: String) {
         baseCurrency = base
     }
 
     protected fun getNewRatesSorted(rates: Rates?): Rates? {
         rates?.getListWithCalculatedPrices(basePrice, Locale.getDefault())
         val oldRates = ratesObservable.value
-        if(oldRates == null){
+        if (oldRates == null) {
             return rates
-        }else {
+        } else {
             rates?.list?.firstOrNull { it.isBasePrice }?.let { newBase ->
                 val listOfCodesInPreviousOrder = oldRates.list.map { it.code }.toMutableList()
                 val positionOfNewBaseInOldList = listOfCodesInPreviousOrder.indexOf(newBase.code)
-                if(positionOfNewBaseInOldList >= 0) {
-                    listOfCodesInPreviousOrder.apply{
+                if (positionOfNewBaseInOldList >= 0) {
+                    listOfCodesInPreviousOrder.apply {
                         removeAt(positionOfNewBaseInOldList)
                         add(0, newBase.code)
                     }
-                    val orderByCode = listOfCodesInPreviousOrder.withIndex().associate { it.value to it.index }
-                    val newRatesWithSortedWithPreviousList: List<SingleRate> = rates.list.sortedBy { orderByCode[it.code] }
+                    val orderByCode =
+                        listOfCodesInPreviousOrder.withIndex().associate { it.value to it.index }
+                    val newRatesWithSortedWithPreviousList: List<SingleRate> =
+                        rates.list.sortedBy { orderByCode[it.code] }
                     return Rates(newRatesWithSortedWithPreviousList)
                 }
             }
