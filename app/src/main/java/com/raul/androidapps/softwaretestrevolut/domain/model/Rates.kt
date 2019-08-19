@@ -6,7 +6,6 @@ import com.raul.androidapps.softwaretestrevolut.domain.deserializer.RatesDeseria
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
-import kotlin.math.truncate
 
 @JsonAdapter(RatesDeserializer::class)
 data class Rates constructor(
@@ -14,7 +13,9 @@ data class Rates constructor(
 ) {
     fun getListWithCalculatedPrices(basePrice: String, locale: Locale) {
         val basePriceConverted = try {
-            basePrice.toBigDecimal()
+            basePrice
+                .replace(',', '.')
+                .toBigDecimal()
         } catch (e: NumberFormatException) {
             0.toBigDecimal()
         }
