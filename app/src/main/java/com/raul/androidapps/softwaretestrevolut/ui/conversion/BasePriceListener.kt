@@ -2,6 +2,7 @@ package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 
 abstract class BasePriceListener {
     val textWatcher = object : TextWatcher {
@@ -56,6 +57,6 @@ abstract class BasePriceListener {
 
     abstract fun updateBasePrice(basePrice: String)
     abstract fun getBasePrice(): String
-    abstract fun onItemClicked(code: String, basePrice: String)
+    abstract fun onItemClicked(v: View, code: String?, basePrice: String, position: Int)
 
 }

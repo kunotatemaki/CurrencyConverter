@@ -14,38 +14,40 @@ class SingleRateViewHolder(
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        item: SingleRate,
+        item: SingleRate?,
         basePriceListener: BasePriceListener
     ) {
-        binding.currencyPriceEditable.removeTextChangedListener(basePriceListener.textWatcher)
-        binding.code = item.code
-        if (item.isBasePrice) {
-            binding.price = basePriceListener.getBasePrice()
-            binding.textColor = resourcesManager.getColor(R.color.colorPrimary)
-            binding.currencyPriceEditable.findFocus()
-        } else {
-            binding.textColor = resourcesManager.getColor(android.R.color.darker_gray)
-            binding.price = item.price
-        }
-        binding.isBasePrice = item.isBasePrice
-        binding.currencyPriceNonEditable.tag = item.code
-        binding.executePendingBindings()
-        if (item.isBasePrice) {
-            binding.currencyPriceEditable?.apply {
-                addTextChangedListener(basePriceListener.textWatcher)
-                setSelection(this.text.length)
+
+            binding.currencyPriceEditable.removeTextChangedListener(basePriceListener.textWatcher)
+            binding.code = item?.code
+            if (item?.isBasePrice == true) {
+                binding.price = basePriceListener.getBasePrice()
+                binding.textColor = resourcesManager.getColor(R.color.colorPrimary)
+                binding.currencyPriceEditable.findFocus()
+            } else {
+                binding.textColor = resourcesManager.getColor(android.R.color.darker_gray)
+                binding.price = item?.price
             }
-            binding.root.apply{
-                setOnClickListener(null)
-                isClickable = false
-                isFocusable= false
+            binding.isBasePrice = item?.isBasePrice
+            binding.currencyPriceNonEditable.tag = item?.code
+            binding.executePendingBindings()
+            if (item?.isBasePrice == true) {
+                binding.currencyPriceEditable?.apply {
+                    addTextChangedListener(basePriceListener.textWatcher)
+                    setSelection(this.text.length)
+                }
+                binding.root.apply {
+                    setOnClickListener(null)
+                    isClickable = false
+                    isFocusable = false
+                }
+            } else {
+                binding.root.setOnClickListener {
+                    val price = binding.currencyPriceNonEditable.text.toString()
+                    val position = if(adapterPosition != RecyclerView.NO_POSITION) adapterPosition else layoutPosition
+                    basePriceListener.onItemClicked(this.itemView, item?.code, price, position)
+                }
             }
-        } else {
-           binding.root.setOnClickListener {
-                val price = binding.currencyPriceNonEditable.text.toString()
-                basePriceListener.onItemClicked(item.code, price)
-            }
-        }
 
     }
 }

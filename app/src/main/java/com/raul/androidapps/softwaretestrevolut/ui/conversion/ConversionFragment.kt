@@ -1,5 +1,6 @@
 package com.raul.androidapps.softwaretestrevolut.ui.conversion
 
+import android.animation.Animator
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -8,16 +9,15 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBinding
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.MainActivity
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
+import androidx.recyclerview.widget.*
+import com.raul.androidapps.softwaretestrevolut.databinding.BindingAdapters_Factory
+import timber.log.Timber
 
 
 class ConversionFragment : BaseFragment() {
@@ -33,6 +33,10 @@ class ConversionFragment : BaseFragment() {
         COROUTINES, RX_JAVA
     }
 
+
+    val callback = RatesTouchHelper.Callback()
+    val itemTouchHelper = RatesTouchHelper(callback)
+
     private var threading: MultiThreadingMethod = MultiThreadingMethod.COROUTINES
 
     private val basePriceListener: BasePriceListener = object : BasePriceListener() {
@@ -43,10 +47,35 @@ class ConversionFragment : BaseFragment() {
         override fun getBasePrice(): String =
             viewModel.basePrice
 
-        override fun onItemClicked(code: String, basePrice: String) {
+        override fun onItemClicked(v: View, code: String?, basePrice: String, position: Int) {
             (activity as? MainActivity)?.hideKeyboard()
-            viewModel.changeCurrency(code)
-            updateBasePrice(basePrice)
+//            viewModel.changeCurrency(code)
+//            updateBasePrice(basePrice)
+//            adapter.test(5)
+//            smoothScroller.targetPosition = 0
+//                        (binding.ratesList.layoutManager as? LinearLayoutManager)?.startSmoothScroll(
+//                            smoothScroller
+//                        )
+//            val a=binding.ratesList.computeVerticalScrollOffset()
+//            val b=binding.ratesList.computeVerticalScrollRange()
+//            val c=binding.ratesList.computeVerticalScrollExtent()
+//            Timber.d("rukia offset $a range $b extent $c")
+            binding.ratesList.smoothScrollBy(0, - binding.ratesList.computeVerticalScrollOffset())
+//
+            adapter.test(position)
+            v.animate()
+                .y(0f)
+                .setDuration(300)
+                .setListener(object: Animator.AnimatorListener{
+                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationEnd(p0: Animator?) {
+                        adapter.test2(position)
+                    }
+                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator?) {}
+                })
+                .start()
+
         }
 
     }
@@ -99,17 +128,19 @@ class ConversionFragment : BaseFragment() {
 
         binding.ratesList.apply {
             this@apply.adapter = this@ConversionFragment.adapter
-            val dividerItemDecoration = DividerItemDecoration(
-                context, LinearLayoutManager.VERTICAL
-            )
-            addItemDecoration(dividerItemDecoration)
+//            val dividerItemDecoration = DividerItemDecoration(
+//                context, LinearLayoutManager.VERTICAL
+//            )
+//            addItemDecoration(dividerItemDecoration)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     (activity as? MainActivity)?.hideKeyboard()
                 }
             })
+            itemTouchHelper.attachToRecyclerView(this)
         }
+
         smoothScroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int {
                 return SNAP_TO_START
@@ -122,17 +153,17 @@ class ConversionFragment : BaseFragment() {
                     binding.progressCircular.visibility = View.GONE
                 }
                 adapter.submitList(rates.list)
-                if (adapter.hasSameBaseCurrency(rates.list.firstOrNull { it.isBasePrice })) {
-                    binding.ratesList.updatePriceViewsWithoutRepainting(rates.list)
-                } else {
-                    smoothScroller.targetPosition = 0
-                    Handler().postDelayed({
-                        (binding.ratesList.layoutManager as? LinearLayoutManager)?.startSmoothScroll(
-                            smoothScroller
-                        )
-                    }, 750)
-
-                }
+//                if (adapter.hasSameBaseCurrency(rates.list.firstOrNull { it.isBasePrice })) {
+//                    binding.ratesList.updatePriceViewsWithoutRepainting(rates.list)
+//                } else {
+//                    smoothScroller.targetPosition = 0
+//                    Handler().postDelayed({
+//                        (binding.ratesList.layoutManager as? LinearLayoutManager)?.startSmoothScroll(
+//                            smoothScroller
+//                        )
+//                    }, 750)
+//
+//                }
             }
     }
 
