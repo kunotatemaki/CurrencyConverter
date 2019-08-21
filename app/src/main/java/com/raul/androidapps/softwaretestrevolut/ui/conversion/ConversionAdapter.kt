@@ -18,9 +18,9 @@ class ConversionAdapter(
     private val resourcesManager: ResourcesManager,
     private val bindingComponent: BindingComponent
 ) :
-    RecyclerView.Adapter<SingleRateViewHolder>(), RatesDragDrop {
+    RecyclerView.Adapter<SingleRateViewHolder>() {
 
-    private var rates: MutableList<SingleRate?> = mutableListOf()
+    private var rates: MutableList<SingleRate> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleRateViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -39,17 +39,17 @@ class ConversionAdapter(
 
 
 
-    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
-        if (fromPosition >= rates.size || toPosition >= rates.size) return
-        rates[fromPosition] = rates[toPosition].also { rates[toPosition] = rates[fromPosition] }
-        notifyItemMoved(fromPosition, toPosition)
-    }
-
-    override fun resetBasePrice() {
-        rates[0]?.isBasePrice = true
-        rates[1]?.isBasePrice = false
-        notifyItemRangeChanged(0,2)
-    }
+//    override fun onItemMoved(fromPosition: Int, toPosition: Int) {
+//        if (fromPosition >= rates.size || toPosition >= rates.size) return
+//        rates[fromPosition] = rates[toPosition].also { rates[toPosition] = rates[fromPosition] }
+//        notifyItemMoved(fromPosition, toPosition)
+//    }
+//
+//    override fun resetBasePrice() {
+//        rates[0]?.isBasePrice = true
+//        rates[1]?.isBasePrice = false
+//        notifyItemRangeChanged(0,2)
+//    }
 
 //    fun onItemMoved(fromPosition: Int) {
 //        if (fromPosition >= rates.size) return
@@ -64,23 +64,25 @@ class ConversionAdapter(
 //    }
 
     fun test(position: Int){
-        rates.add(0, null)
-        notifyItemRangeChanged(0, position)
+//        rates.add(0, null)
+//        notifyItemRangeChanged(0, position)
     }
 
     fun test2(position: Int){
-        rates.removeAt(0)
+//        rates.removeAt(0)
 //        if (fromPosition >= rates.size || toPosition >= rates.size) return
         val aux = rates[position]
         for(n in position downTo 1){
             rates[n] = rates[n-1]
         }
         rates[0] = aux
+        rates[0].isBasePrice = true
+        rates[1].isBasePrice = false
         notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: SingleRateViewHolder, position: Int) {
-        holder.bind(rates[position], basePriceListener)
+        holder.bind(rates[position], basePriceListener, position)
     }
 
     fun hasSameBaseCurrency(newBaseCurrency: SingleRate?): Boolean {

@@ -5,6 +5,8 @@ import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.RateItemBinding
 import com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate
 import com.raul.androidapps.softwaretestrevolut.resources.ResourcesManager
+import timber.log.Timber
+import java.text.FieldPosition
 
 
 class SingleRateViewHolder(
@@ -14,24 +16,34 @@ class SingleRateViewHolder(
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        item: SingleRate?,
-        basePriceListener: BasePriceListener
+        item: SingleRate,
+        basePriceListener: BasePriceListener,
+        position: Int
     ) {
-
+//        itemView.y = 0f
+//        itemView.setBackgroundColor(when(position){
+//            0->resourcesManager.getColor(android.R.color.holo_orange_dark)
+//            1->resourcesManager.getColor(R.color.colorPrimaryDark)
+//            2->resourcesManager.getColor(R.color.colorAccent)
+//            3->resourcesManager.getColor(android.R.color.holo_green_light)
+//            6->resourcesManager.getColor(android.R.color.holo_blue_light)
+//            else->resourcesManager.getColor(android.R.color.white)
+//        })
+//        Timber.d("rukia position $positionTest -> y = ${itemView.y}")
             binding.currencyPriceEditable.removeTextChangedListener(basePriceListener.textWatcher)
-            binding.code = item?.code
-            if (item?.isBasePrice == true) {
+            binding.code = item.code
+            if (item.isBasePrice) {
                 binding.price = basePriceListener.getBasePrice()
                 binding.textColor = resourcesManager.getColor(R.color.colorPrimary)
                 binding.currencyPriceEditable.findFocus()
             } else {
                 binding.textColor = resourcesManager.getColor(android.R.color.darker_gray)
-                binding.price = item?.price
+                binding.price = item.price
             }
-            binding.isBasePrice = item?.isBasePrice
-            binding.currencyPriceNonEditable.tag = item?.code
+            binding.isBasePrice = item.isBasePrice
+            binding.currencyPriceNonEditable.tag = item.code
             binding.executePendingBindings()
-            if (item?.isBasePrice == true) {
+            if (item.isBasePrice) {
                 binding.currencyPriceEditable?.apply {
                     addTextChangedListener(basePriceListener.textWatcher)
                     setSelection(this.text.length)
@@ -44,8 +56,7 @@ class SingleRateViewHolder(
             } else {
                 binding.root.setOnClickListener {
                     val price = binding.currencyPriceNonEditable.text.toString()
-                    val position = if(adapterPosition != RecyclerView.NO_POSITION) adapterPosition else layoutPosition
-                    basePriceListener.onItemClicked(this.itemView, item?.code, price, position)
+                    basePriceListener.onItemClicked(this.itemView, item.code, price, position)
                 }
             }
 
