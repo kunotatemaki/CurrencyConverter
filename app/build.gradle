@@ -9,7 +9,7 @@ apply plugin: 'androidx.navigation.safeargs'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.raul.androidapps.softwaretestrevolut"
+        applicationId "com.raul.androidapps.currencyconverter"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1

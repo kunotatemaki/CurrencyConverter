@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SoftwareTestRevolut</string>
+    <string name="app_name">CurrencyConverter</string>
     <string name="coroutines">Coroutines</string>
     <string name="rx_java">Rx Java</string>
 </resources>

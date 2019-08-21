@@ -6,7 +6,7 @@
             app:startDestination="@id/selectorFragment">
 
     <fragment android:id="@+id/conversion_fragment"
-              android:name="com.raul.androidapps.softwaretestrevolut.ui.conversion.ConversionFragment"
+              android:name="com.raul.androidapps.currencyconverter.ui.conversion.ConversionFragment"
               android:label="conversion_fragment" tools:layout="@layout/conversion_fragment">
         <argument
                 android:name="coroutines"
@@ -14,7 +14,7 @@
     </fragment>
     <fragment
             android:id="@+id/selectorFragment"
-            android:name="com.raul.androidapps.softwaretestrevolut.ui.selector.SelectorFragment"
+            android:name="com.raul.androidapps.currencyconverter.ui.selector.SelectorFragment"
             android:label="SelectorFragment"
             tools:layout="@layout/fragment_selector">
         <action

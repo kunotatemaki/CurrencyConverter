@@ -9,7 +9,7 @@
             android:layout_height="match_parent"
             tools:context=".ui.conversion.ConversionFragment">
 
-        <com.raul.androidapps.softwaretestrevolut.ui.conversion.ConversionRecyclerView
+        <com.raul.androidapps.currencyconverter.ui.conversion.ConversionRecyclerView
                 android:id="@+id/ratesList"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

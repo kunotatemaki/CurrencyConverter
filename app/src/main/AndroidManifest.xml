@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.raul.androidapps.softwaretestrevolut">
+        package="com.raul.androidapps.currencyconverter">
 
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-            android:name=".RevolutApplication"
+            android:name="com.raul.androidapps.currencyconverter.CurrencyConverterApplication"
             android:allowBackup="true"
             android:fullBackupContent="@xml/backup_descriptor"
             android:icon="@mipmap/ic_launcher"
@@ -15,7 +15,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity
-                android:name=".ui.MainActivity"
+                android:name="com.raul.androidapps.currencyconverter.ui.MainActivity"
                 android:theme="@style/Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
