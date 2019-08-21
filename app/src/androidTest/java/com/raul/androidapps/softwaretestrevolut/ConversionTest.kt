@@ -55,6 +55,8 @@ class ConversionTest {
             .thenReturn(testRates)
         Mockito.`when`(viewModel.changeCurrency(ArgumentMatchers.anyString()))
             .thenCallRealMethod()
+        Mockito.`when`(viewModel.setRates(ArgumentMatchers.anyList()))
+            .then {  }
 
     }
 
@@ -89,6 +91,7 @@ class ConversionTest {
         onView(withId(R.id.ratesList)).perform(
             actionOnItemAtPosition<SingleRateViewHolder>(1, click())
         )
+        Thread.sleep(1000)
         verify(viewModel).changeCurrency("USD")
     }
 
@@ -106,6 +109,7 @@ class ConversionTest {
         onView(withId(R.id.ratesList)).perform(
             actionOnItemAtPosition<SingleRateViewHolder>(2, click())
         )
+        Thread.sleep(1000)
         verify(viewModel).changeCurrency("GBP")
     }
 }

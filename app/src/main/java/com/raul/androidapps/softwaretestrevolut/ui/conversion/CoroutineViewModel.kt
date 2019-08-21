@@ -3,6 +3,7 @@ package com.raul.androidapps.softwaretestrevolut.ui.conversion
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import com.raul.androidapps.softwaretestrevolut.domain.model.Rates
+import com.raul.androidapps.softwaretestrevolut.domain.model.SingleRate
 import com.raul.androidapps.softwaretestrevolut.network.Resource
 import com.raul.androidapps.softwaretestrevolut.repository.Repository
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
@@ -49,6 +50,11 @@ open class CoroutineViewModel @Inject constructor(private val repository: Reposi
     @VisibleForTesting
     override fun getRates(): LiveData<Rates> {
         return super.getRates()
+    }
+
+    @VisibleForTesting
+    override fun setRates(list: List<SingleRate>) {
+        super.setRates(list)
     }
 
     @VisibleForTesting

@@ -19,7 +19,7 @@ abstract class BaseViewModel : ViewModel() {
 
     open fun getRates(): LiveData<Rates> = ratesObservable
 
-    fun setRates(list: List<SingleRate>){
+    open fun setRates(list: List<SingleRate>){
         ratesObservable.value = Rates(list)
     }
 
