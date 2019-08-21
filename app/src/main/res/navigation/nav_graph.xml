@@ -3,7 +3,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/nav_graph"
-            app:startDestination="@id/conversion_fragment">
+            app:startDestination="@id/selectorFragment">
 
     <fragment android:id="@+id/conversion_fragment"
               android:name="com.raul.androidapps.softwaretestrevolut.ui.conversion.ConversionFragment"

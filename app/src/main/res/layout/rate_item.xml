@@ -18,6 +18,10 @@
                 type="Boolean" />
 
         <variable
+                name="copyView"
+                type="Boolean" />
+
+        <variable
                 name="textColor"
                 type="Integer" />
     </data>
@@ -25,7 +29,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="64dp"
-android:background="@android:color/white"
+            android:background="@android:color/white"
             tools:ignore="UnusedAttribute">
 
         <TextView
@@ -49,12 +53,12 @@ android:background="@android:color/white"
                 isVisibleOrGone="@{isBasePrice}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:importantForAutofill="no"
                 android:digits="0123456789.,"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
                 android:inputType="numberDecimal"
                 android:minWidth="100dp"
                 android:text="@{price}"
@@ -71,13 +75,13 @@ android:background="@android:color/white"
                 isVisibleOrGone="@{!isBasePrice}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="100dp"
-                android:textAlignment="textEnd"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:importantForAutofill="no"
+                android:minWidth="100dp"
                 android:text="@{price}"
+                android:textAlignment="textEnd"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -87,18 +91,20 @@ android:background="@android:color/white"
         <ImageView
                 android:layout_width="0dp"
                 android:layout_height="2dp"
+                android:background="@android:color/darker_gray"
                 app:layout_constraintEnd_toEndOf="@id/currencyPriceNonEditable"
                 app:layout_constraintStart_toStartOf="@id/currencyPriceNonEditable"
                 app:layout_constraintTop_toBottomOf="@id/currencyPriceNonEditable"
-                android:background="@android:color/darker_gray"
                 tools:ignore="ContentDescription" />
+
         <ImageView
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+                isVisibleOrGone="@{copyView}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

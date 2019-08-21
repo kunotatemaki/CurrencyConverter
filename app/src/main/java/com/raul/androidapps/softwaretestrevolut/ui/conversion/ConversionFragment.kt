@@ -18,6 +18,7 @@ import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.MainActivity
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
+import timber.log.Timber
 
 
 class ConversionFragment : BaseFragment() {
@@ -31,7 +32,7 @@ class ConversionFragment : BaseFragment() {
 
     private var copyBinding: RateItemBinding? = null
 
-    private val animationTime: Long = 3000
+    private val animationTime: Long = 250
 
     private enum class MultiThreadingMethod {
         COROUTINES, RX_JAVA
@@ -50,23 +51,10 @@ class ConversionFragment : BaseFragment() {
 
         override fun onItemClicked(v: View, code: String?, basePrice: String, position: Int) {
             (activity as? MainActivity)?.hideKeyboard()
-//            viewModel.changeCurrency(code)
-//            updateBasePrice(basePrice)
-//            adapter.test(5)
 
             val verticalScrollOffset = binding.ratesList.computeVerticalScrollOffset()
-            val visibleListHeigh = binding.ratesList.computeVerticalScrollExtent()
+            val visibleListHeight = binding.ratesList.computeVerticalScrollExtent()
 
-//            adapter.getItem(position)?.let { item ->
-//                val inflater = LayoutInflater.from(context)
-//                copyBinding = DataBindingUtil.inflate<RateItemBinding>(
-//                    inflater,
-//                    R.layout.rate_item,
-//                    binding.main,
-//                    false,
-//                    bindingComponent
-//                )
-//                copyBinding?.let {
             createCopyOfTheSelectedViewAndAttachToTheScreen(
                 positionOfSelectedViewInAdapter = position,
                 positionOfSelectedViewOnScreenInPx = v.y
@@ -79,112 +67,39 @@ class ConversionFragment : BaseFragment() {
                     ) {
                         if (newState == SCROLL_STATE_IDLE) {
                             binding.ratesList.removeOnScrollListener(this)
+                            scrollAllItemsToAllowCopyViewToBePlacedAtTheTopOfTheScreen(
+                                positionOfSelectedViewInAdapter = position
+                            )
 
                             animateCopyViewToTheTopOfTheScreen(
                                 copyView = copyBinding?.root,
                                 originalView = v,
+                                positionOfSelectedViewInAdapter = position,
                                 viewVisibleAfterScrolling = wouldTheCopyViewStillVisibleAfterScrollingToTop(
                                     positionOfSelectedViewOnScreenInPx = copyBinding?.root?.y ?: 0F,
                                     heightToBeScrolled = verticalScrollOffset,
-                                    heightOfVisibleListOnScreen = visibleListHeigh
+                                    heightOfVisibleListOnScreen = visibleListHeight
                                 )
-                            )
-                            scrollAllItemsToAllowCopyViewToBePlacedAtTheTopOfTheScreen(
-                                positionOfSelectedViewInAdapter = position
                             )
                         }
                     }
                 })
             } else {
-                animateCopyViewToTheTopOfTheScreen(
-                    copyView = copyBinding?.root,
-                    originalView = v,
-                    viewVisibleAfterScrolling = wouldTheCopyViewStillVisibleAfterScrollingToTop(
-                        positionOfSelectedViewOnScreenInPx = copyBinding?.root?.y ?: 0F,
-                        heightToBeScrolled = verticalScrollOffset,
-                        heightOfVisibleListOnScreen = visibleListHeigh
-                    )
-                )
                 scrollAllItemsToAllowCopyViewToBePlacedAtTheTopOfTheScreen(
                     positionOfSelectedViewInAdapter = position
                 )
+                animateCopyViewToTheTopOfTheScreen(
+                    copyView = copyBinding?.root,
+                    originalView = v,
+                    positionOfSelectedViewInAdapter = position,
+                    viewVisibleAfterScrolling = wouldTheCopyViewStillVisibleAfterScrollingToTop(
+                        positionOfSelectedViewOnScreenInPx = copyBinding?.root?.y ?: 0F,
+                        heightToBeScrolled = verticalScrollOffset,
+                        heightOfVisibleListOnScreen = visibleListHeight
+                    )
+                )
             }
-
-
-//                    it.root.animate()
-//                        .y(0F)
-//                        .setDuration(300)
-//                        .setListener(object : Animator.AnimatorListener {
-//                            override fun onAnimationRepeat(p0: Animator?) {}
-//                            override fun onAnimationEnd(p0: Animator?) {
-////                            for (i in 0 until position) {
-////                                this@apply.getChildAt(i)?.let {
-////                                    val view = this@apply.getChildViewHolder(it).itemView
-////                                    view.y = view.y - view.height
-////                                }
-////                            }
-////                            v.y = actualPosition
-////                            this@ConversionFragment.adapter.test2(position)
-////
-//                            }
-//
-//                            override fun onAnimationCancel(p0: Animator?) {}
-//                            override fun onAnimationStart(p0: Animator?) {}
-//                        })
-//                        .start()
-//                }
-//            }
-//            v.setBackgroundColor(resourcesManager.getColor(R.color.colorAccent))
             binding.ratesList.smoothScrollBy(0, -verticalScrollOffset)
-//            binding.ratesList.apply {
-//                var firstShownPosition: Float? = null
-////                    (this.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-//                for (i in 0 until position) {
-//                    this.getChildAt(i)?.let {
-//                        if(firstShownPosition == null){
-//                            firstShownPosition = it.y
-//                        }
-//                        this.getChildViewHolder(it)?.itemView?.let { view ->
-//                            view.animate()
-//                                .y(view.y + view.height)
-//                                .setDuration(300)
-//                                .setListener(null)
-//                                .start()
-//                        }
-//                    }
-//                }
-//                val actualPosition = v.y
-//                v.animate()
-//                    .y(firstShownPosition ?: 0F)
-//                    .setDuration(300)
-//                    .setListener(object : Animator.AnimatorListener {
-//                        override fun onAnimationRepeat(p0: Animator?) {
-//                            Timber.d("")
-//                        }
-//                        override fun onAnimationEnd(p0: Animator?) {
-//                            for (i in 0 until position) {
-//                                this@apply.getChildAt(i)?.let {
-//                                    val view = this@apply.getChildViewHolder(it).itemView
-//                                    view.y = view.y - view.height
-//                                }
-//                            }
-//                            v.y = actualPosition
-//                            this@ConversionFragment.adapter.test2(position)
-//
-//                        }
-//
-//                        override fun onAnimationCancel(p0: Animator?) {
-//                            Timber.d("")
-//                        }
-//                        override fun onAnimationStart(p0: Animator?) {
-//                            Timber.d("")
-//                        }
-//                    })
-//                    .start()
-//            }
-//
-//            adapter.test(position)
-//
 
         }
 
@@ -217,29 +132,26 @@ class ConversionFragment : BaseFragment() {
         private fun animateCopyViewToTheTopOfTheScreen(
             copyView: View?,
             originalView: View?,
+            positionOfSelectedViewInAdapter: Int,
             viewVisibleAfterScrolling: Boolean
         ) {
             if (viewVisibleAfterScrolling) {
                 originalView?.visibility = View.INVISIBLE
             }
-            copyView?.animate()?.y(0F)?.setDuration(animationTime)?.setListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {}
-                override fun onAnimationEnd(p0: Animator?) {
-        //                        removeCopyViewFromScreen()
-                    //                            for (i in 0 until position) {
-                    //                                this@apply.getChildAt(i)?.let {
-                    //                                    val view = this@apply.getChildViewHolder(it).itemView
-                    //                                    view.y = view.y - view.height
-                    //                                }
-                    //                            }
-                    //                            v.y = actualPosition
-                    //                            this@ConversionFragment.adapter.test2(position)
-                    //
-                }
+            copyView?.animate()?.y(0F)?.setDuration(animationTime)
+                ?.setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationEnd(p0: Animator?) {
+                        removeCopyViewFromScreen()
+                        if (viewVisibleAfterScrolling) {
+                            originalView?.visibility = View.VISIBLE
+                        }
+                        adapter.test2(positionOfSelectedViewInAdapter)
+                    }
 
-                override fun onAnimationCancel(p0: Animator?) {}
-                override fun onAnimationStart(p0: Animator?) {}
-            })?.start()
+                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator?) {}
+                })?.start()
         }
 
         private fun wouldTheCopyViewStillVisibleAfterScrollingToTop(
@@ -256,9 +168,10 @@ class ConversionFragment : BaseFragment() {
             for (i in 0 until positionOfSelectedViewInAdapter) {
                 binding.ratesList.apply {
                     getChildAt(i)?.let {
-                        getChildViewHolder(it)?.itemView?.let { view ->
-                            view.animate()
-                                .y(view.y + view.height)
+                        getChildViewHolder(it)?.let { viewHolder ->
+                            viewHolder.setIsRecyclable(false)
+                            viewHolder.itemView.animate()
+                                .y(viewHolder.itemView.y + viewHolder.itemView.height)
                                 .setDuration(animationTime)
                                 .setListener(null)
                                 .start()
@@ -267,11 +180,6 @@ class ConversionFragment : BaseFragment() {
                 }
             }
         }
-
-        private fun moveAllViewsToInitialPositionBeforeRedrowTheScreen() {
-
-        }
-
     }
 
     private lateinit var smoothScroller: LinearSmoothScroller
@@ -329,6 +237,8 @@ class ConversionFragment : BaseFragment() {
 //                context, LinearLayoutManager.VERTICAL
 //            )
 //            addItemDecoration(dividerItemDecoration)
+//            recycledViewPool.getRecycledViewCount(0)
+//            recycledViewPool.setMaxRecycledViews(0, 0)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
