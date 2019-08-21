@@ -18,7 +18,6 @@ import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.MainActivity
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
-import timber.log.Timber
 
 
 class ConversionFragment : BaseFragment() {
@@ -33,6 +32,7 @@ class ConversionFragment : BaseFragment() {
     private var copyBinding: RateItemBinding? = null
 
     private val animationTime: Long = 250
+    private var animatingFlag = false
 
     private enum class MultiThreadingMethod {
         COROUTINES, RX_JAVA
@@ -51,6 +51,7 @@ class ConversionFragment : BaseFragment() {
 
         override fun onItemClicked(v: View, code: String?, basePrice: String, position: Int) {
             (activity as? MainActivity)?.hideKeyboard()
+            animatingFlag = true
 
             val verticalScrollOffset = binding.ratesList.computeVerticalScrollOffset()
             val visibleListHeight = binding.ratesList.computeVerticalScrollExtent()
@@ -79,7 +80,8 @@ class ConversionFragment : BaseFragment() {
                                     positionOfSelectedViewOnScreenInPx = copyBinding?.root?.y ?: 0F,
                                     heightToBeScrolled = verticalScrollOffset,
                                     heightOfVisibleListOnScreen = visibleListHeight
-                                )
+                                ),
+                                basePrice = basePrice
                             )
                         }
                     }
@@ -96,7 +98,8 @@ class ConversionFragment : BaseFragment() {
                         positionOfSelectedViewOnScreenInPx = copyBinding?.root?.y ?: 0F,
                         heightToBeScrolled = verticalScrollOffset,
                         heightOfVisibleListOnScreen = visibleListHeight
-                    )
+                    ),
+                    basePrice = basePrice
                 )
             }
             binding.ratesList.smoothScrollBy(0, -verticalScrollOffset)
@@ -133,7 +136,8 @@ class ConversionFragment : BaseFragment() {
             copyView: View?,
             originalView: View?,
             positionOfSelectedViewInAdapter: Int,
-            viewVisibleAfterScrolling: Boolean
+            viewVisibleAfterScrolling: Boolean,
+            basePrice: String
         ) {
             if (viewVisibleAfterScrolling) {
                 originalView?.visibility = View.INVISIBLE
@@ -146,9 +150,13 @@ class ConversionFragment : BaseFragment() {
                         if (viewVisibleAfterScrolling) {
                             originalView?.visibility = View.VISIBLE
                         }
-                        adapter.test2(positionOfSelectedViewInAdapter)
+                        val newList = adapter.moveRateToTheTop(positionOfSelectedViewInAdapter)
+                        viewModel.setRates(newList)
+                        if(newList.isNotEmpty())
+                        viewModel.changeCurrency(newList.first().code)
+                        updateBasePrice(basePrice)
+                        animatingFlag = false
                     }
-
                     override fun onAnimationCancel(p0: Animator?) {}
                     override fun onAnimationStart(p0: Animator?) {}
                 })?.start()
@@ -233,19 +241,12 @@ class ConversionFragment : BaseFragment() {
 
         binding.ratesList.apply {
             this@apply.adapter = this@ConversionFragment.adapter
-//            val dividerItemDecoration = DividerItemDecoration(
-//                context, LinearLayoutManager.VERTICAL
-//            )
-//            addItemDecoration(dividerItemDecoration)
-//            recycledViewPool.getRecycledViewCount(0)
-//            recycledViewPool.setMaxRecycledViews(0, 0)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     (activity as? MainActivity)?.hideKeyboard()
                 }
             })
-
         }
 
         smoothScroller = object : LinearSmoothScroller(context) {
@@ -256,21 +257,15 @@ class ConversionFragment : BaseFragment() {
         viewModel.getRates()
             .nonNull()
             .observe({ lifecycle }) { rates ->
-                if (rates.list.isNotEmpty()) {
-                    binding.progressCircular.visibility = View.GONE
+                if(animatingFlag.not()) {
+                    if (rates.list.isNotEmpty()) {
+                        binding.progressCircular.visibility = View.GONE
+                    }
+                    val screenRepainted = adapter.submitList(rates.list)
+                    if (screenRepainted.not()) {
+                        binding.ratesList.updatePriceViewsWithoutRepainting(rates.list)
+                    }
                 }
-                adapter.submitList(rates.list)
-//                if (adapter.hasSameBaseCurrency(rates.list.firstOrNull { it.isBasePrice })) {
-//                    binding.ratesList.updatePriceViewsWithoutRepainting(rates.list)
-//                } else {
-//                    smoothScroller.targetPosition = 0
-//                    Handler().postDelayed({
-//                        (binding.ratesList.layoutManager as? LinearLayoutManager)?.startSmoothScroll(
-//                            smoothScroller
-//                        )
-//                    }, 750)
-//
-//                }
             }
     }
 
