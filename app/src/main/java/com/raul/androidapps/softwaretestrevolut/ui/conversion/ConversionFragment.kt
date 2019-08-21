@@ -8,16 +8,16 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.raul.androidapps.softwaretestrevolut.R
 import com.raul.androidapps.softwaretestrevolut.databinding.ConversionFragmentBinding
+import com.raul.androidapps.softwaretestrevolut.databinding.RateItemBinding
 import com.raul.androidapps.softwaretestrevolut.extensions.nonNull
 import com.raul.androidapps.softwaretestrevolut.ui.MainActivity
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseFragment
 import com.raul.androidapps.softwaretestrevolut.ui.common.BaseViewModel
-import timber.log.Timber
 
 
 class ConversionFragment : BaseFragment() {
@@ -28,6 +28,10 @@ class ConversionFragment : BaseFragment() {
     @VisibleForTesting
     lateinit var viewModel: BaseViewModel
     private lateinit var adapter: ConversionAdapter
+
+    private var copyBinding: RateItemBinding? = null
+
+    private val animationTime: Long = 3000
 
     private enum class MultiThreadingMethod {
         COROUTINES, RX_JAVA
@@ -49,65 +53,222 @@ class ConversionFragment : BaseFragment() {
 //            viewModel.changeCurrency(code)
 //            updateBasePrice(basePrice)
 //            adapter.test(5)
-//            smoothScroller.targetPosition = 0
-//                        (binding.ratesList.layoutManager as? LinearLayoutManager)?.startSmoothScroll(
-//                            smoothScroller
-//                        )
-            val a=binding.ratesList.computeVerticalScrollOffset()
-//            val b=binding.ratesList.computeVerticalScrollRange()
-//            val c=binding.ratesList.computeVerticalScrollExtent()
-//            Timber.d("rukia offset $a range $b extent $c")
-//            binding.ratesList.smoothScrollBy(0, -a)
-//            return
-            binding.ratesList.apply {
-                var firstShownPosition: Float? = null
-//                    (this.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                for (i in 0 until position) {
-                    this.getChildAt(i)?.let {
-                        if(firstShownPosition == null){
-                            firstShownPosition = it.y
+
+            val verticalScrollOffset = binding.ratesList.computeVerticalScrollOffset()
+            val visibleListHeigh = binding.ratesList.computeVerticalScrollExtent()
+
+//            adapter.getItem(position)?.let { item ->
+//                val inflater = LayoutInflater.from(context)
+//                copyBinding = DataBindingUtil.inflate<RateItemBinding>(
+//                    inflater,
+//                    R.layout.rate_item,
+//                    binding.main,
+//                    false,
+//                    bindingComponent
+//                )
+//                copyBinding?.let {
+            createCopyOfTheSelectedViewAndAttachToTheScreen(
+                positionOfSelectedViewInAdapter = position,
+                positionOfSelectedViewOnScreenInPx = v.y
+            )
+            if (verticalScrollOffset > 0) {
+                binding.ratesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(
+                        recyclerView: RecyclerView,
+                        newState: Int
+                    ) {
+                        if (newState == SCROLL_STATE_IDLE) {
+                            binding.ratesList.removeOnScrollListener(this)
+
+                            animateCopyViewToTheTopOfTheScreen(
+                                copyView = copyBinding?.root,
+                                originalView = v,
+                                viewVisibleAfterScrolling = wouldTheCopyViewStillVisibleAfterScrollingToTop(
+                                    positionOfSelectedViewOnScreenInPx = copyBinding?.root?.y ?: 0F,
+                                    heightToBeScrolled = verticalScrollOffset,
+                                    heightOfVisibleListOnScreen = visibleListHeigh
+                                )
+                            )
+                            scrollAllItemsToAllowCopyViewToBePlacedAtTheTopOfTheScreen(
+                                positionOfSelectedViewInAdapter = position
+                            )
                         }
-                        this.getChildViewHolder(it)?.itemView?.let { view ->
+                    }
+                })
+            } else {
+                animateCopyViewToTheTopOfTheScreen(
+                    copyView = copyBinding?.root,
+                    originalView = v,
+                    viewVisibleAfterScrolling = wouldTheCopyViewStillVisibleAfterScrollingToTop(
+                        positionOfSelectedViewOnScreenInPx = copyBinding?.root?.y ?: 0F,
+                        heightToBeScrolled = verticalScrollOffset,
+                        heightOfVisibleListOnScreen = visibleListHeigh
+                    )
+                )
+                scrollAllItemsToAllowCopyViewToBePlacedAtTheTopOfTheScreen(
+                    positionOfSelectedViewInAdapter = position
+                )
+            }
+
+
+//                    it.root.animate()
+//                        .y(0F)
+//                        .setDuration(300)
+//                        .setListener(object : Animator.AnimatorListener {
+//                            override fun onAnimationRepeat(p0: Animator?) {}
+//                            override fun onAnimationEnd(p0: Animator?) {
+////                            for (i in 0 until position) {
+////                                this@apply.getChildAt(i)?.let {
+////                                    val view = this@apply.getChildViewHolder(it).itemView
+////                                    view.y = view.y - view.height
+////                                }
+////                            }
+////                            v.y = actualPosition
+////                            this@ConversionFragment.adapter.test2(position)
+////
+//                            }
+//
+//                            override fun onAnimationCancel(p0: Animator?) {}
+//                            override fun onAnimationStart(p0: Animator?) {}
+//                        })
+//                        .start()
+//                }
+//            }
+//            v.setBackgroundColor(resourcesManager.getColor(R.color.colorAccent))
+            binding.ratesList.smoothScrollBy(0, -verticalScrollOffset)
+//            binding.ratesList.apply {
+//                var firstShownPosition: Float? = null
+////                    (this.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+//                for (i in 0 until position) {
+//                    this.getChildAt(i)?.let {
+//                        if(firstShownPosition == null){
+//                            firstShownPosition = it.y
+//                        }
+//                        this.getChildViewHolder(it)?.itemView?.let { view ->
+//                            view.animate()
+//                                .y(view.y + view.height)
+//                                .setDuration(300)
+//                                .setListener(null)
+//                                .start()
+//                        }
+//                    }
+//                }
+//                val actualPosition = v.y
+//                v.animate()
+//                    .y(firstShownPosition ?: 0F)
+//                    .setDuration(300)
+//                    .setListener(object : Animator.AnimatorListener {
+//                        override fun onAnimationRepeat(p0: Animator?) {
+//                            Timber.d("")
+//                        }
+//                        override fun onAnimationEnd(p0: Animator?) {
+//                            for (i in 0 until position) {
+//                                this@apply.getChildAt(i)?.let {
+//                                    val view = this@apply.getChildViewHolder(it).itemView
+//                                    view.y = view.y - view.height
+//                                }
+//                            }
+//                            v.y = actualPosition
+//                            this@ConversionFragment.adapter.test2(position)
+//
+//                        }
+//
+//                        override fun onAnimationCancel(p0: Animator?) {
+//                            Timber.d("")
+//                        }
+//                        override fun onAnimationStart(p0: Animator?) {
+//                            Timber.d("")
+//                        }
+//                    })
+//                    .start()
+//            }
+//
+//            adapter.test(position)
+//
+
+        }
+
+        private fun createCopyOfTheSelectedViewAndAttachToTheScreen(
+            positionOfSelectedViewInAdapter: Int,
+            positionOfSelectedViewOnScreenInPx: Float
+        ) {
+            val inflater = LayoutInflater.from(context)
+            copyBinding = DataBindingUtil.inflate<RateItemBinding>(
+                inflater,
+                R.layout.rate_item,
+                binding.main,
+                false,
+                bindingComponent
+            )
+            copyBinding?.let {
+                adapter.getItem(positionOfSelectedViewInAdapter)?.let { item ->
+                    val vHolder = SingleRateViewHolder(it, resourcesManager, true)
+                    vHolder.bind(item, null, 0)
+                    binding.main.addView(it.root)
+                    it.root.y = positionOfSelectedViewOnScreenInPx
+                }
+            }
+        }
+
+        private fun removeCopyViewFromScreen() {
+            binding.main.removeView(copyBinding?.root)
+        }
+
+        private fun animateCopyViewToTheTopOfTheScreen(
+            copyView: View?,
+            originalView: View?,
+            viewVisibleAfterScrolling: Boolean
+        ) {
+            if (viewVisibleAfterScrolling) {
+                originalView?.visibility = View.INVISIBLE
+            }
+            copyView?.animate()?.y(0F)?.setDuration(animationTime)?.setListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {}
+                override fun onAnimationEnd(p0: Animator?) {
+        //                        removeCopyViewFromScreen()
+                    //                            for (i in 0 until position) {
+                    //                                this@apply.getChildAt(i)?.let {
+                    //                                    val view = this@apply.getChildViewHolder(it).itemView
+                    //                                    view.y = view.y - view.height
+                    //                                }
+                    //                            }
+                    //                            v.y = actualPosition
+                    //                            this@ConversionFragment.adapter.test2(position)
+                    //
+                }
+
+                override fun onAnimationCancel(p0: Animator?) {}
+                override fun onAnimationStart(p0: Animator?) {}
+            })?.start()
+        }
+
+        private fun wouldTheCopyViewStillVisibleAfterScrollingToTop(
+            positionOfSelectedViewOnScreenInPx: Float,
+            heightToBeScrolled: Int,
+            heightOfVisibleListOnScreen: Int
+        ): Boolean =
+            positionOfSelectedViewOnScreenInPx + heightToBeScrolled < heightOfVisibleListOnScreen
+
+
+        private fun scrollAllItemsToAllowCopyViewToBePlacedAtTheTopOfTheScreen(
+            positionOfSelectedViewInAdapter: Int
+        ) {
+            for (i in 0 until positionOfSelectedViewInAdapter) {
+                binding.ratesList.apply {
+                    getChildAt(i)?.let {
+                        getChildViewHolder(it)?.itemView?.let { view ->
                             view.animate()
                                 .y(view.y + view.height)
-                                .setDuration(300)
+                                .setDuration(animationTime)
                                 .setListener(null)
                                 .start()
                         }
                     }
                 }
-                val actualPosition = v.y
-                v.animate()
-                    .y(firstShownPosition ?: 0F)
-                    .setDuration(300)
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationRepeat(p0: Animator?) {
-                            Timber.d("")
-                        }
-                        override fun onAnimationEnd(p0: Animator?) {
-                            for (i in 0 until position) {
-                                this@apply.getChildAt(i)?.let {
-                                    val view = this@apply.getChildViewHolder(it).itemView
-                                    view.y = view.y - view.height
-                                }
-                            }
-                            v.y = actualPosition
-                            this@ConversionFragment.adapter.test2(position)
-
-                        }
-
-                        override fun onAnimationCancel(p0: Animator?) {
-                            Timber.d("")
-                        }
-                        override fun onAnimationStart(p0: Animator?) {
-                            Timber.d("")
-                        }
-                    })
-                    .start()
             }
-//
-//            adapter.test(position)
-//
+        }
+
+        private fun moveAllViewsToInitialPositionBeforeRedrowTheScreen() {
 
         }
 

@@ -11,15 +11,19 @@ import java.text.FieldPosition
 
 class SingleRateViewHolder(
     private val binding: RateItemBinding,
-    private val resourcesManager: ResourcesManager
+    private val resourcesManager: ResourcesManager,
+    val paint: Boolean = false
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
         item: SingleRate,
-        basePriceListener: BasePriceListener,
+        basePriceListener: BasePriceListener?,
         position: Int
     ) {
+        if(paint){
+            itemView.setBackgroundColor(resourcesManager.getColor(android.R.color.holo_green_light))
+        }
 //        itemView.y = 0f
 //        itemView.setBackgroundColor(when(position){
 //            0->resourcesManager.getColor(android.R.color.holo_orange_dark)
@@ -30,10 +34,10 @@ class SingleRateViewHolder(
 //            else->resourcesManager.getColor(android.R.color.white)
 //        })
 //        Timber.d("rukia position $positionTest -> y = ${itemView.y}")
-            binding.currencyPriceEditable.removeTextChangedListener(basePriceListener.textWatcher)
+            binding.currencyPriceEditable.removeTextChangedListener(basePriceListener?.textWatcher)
             binding.code = item.code
             if (item.isBasePrice) {
-                binding.price = basePriceListener.getBasePrice()
+                binding.price = basePriceListener?.getBasePrice()
                 binding.textColor = resourcesManager.getColor(R.color.colorPrimary)
                 binding.currencyPriceEditable.findFocus()
             } else {
@@ -45,7 +49,7 @@ class SingleRateViewHolder(
             binding.executePendingBindings()
             if (item.isBasePrice) {
                 binding.currencyPriceEditable?.apply {
-                    addTextChangedListener(basePriceListener.textWatcher)
+                    addTextChangedListener(basePriceListener?.textWatcher)
                     setSelection(this.text.length)
                 }
                 binding.root.apply {
@@ -56,7 +60,7 @@ class SingleRateViewHolder(
             } else {
                 binding.root.setOnClickListener {
                     val price = binding.currencyPriceNonEditable.text.toString()
-                    basePriceListener.onItemClicked(this.itemView, item.code, price, position)
+                    basePriceListener?.onItemClicked(this.itemView, item.code, price, position)
                 }
             }
 

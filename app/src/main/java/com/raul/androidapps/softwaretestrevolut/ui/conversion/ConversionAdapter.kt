@@ -85,6 +85,13 @@ class ConversionAdapter(
         holder.bind(rates[position], basePriceListener, position)
     }
 
+    fun getItem(position: Int): SingleRate? {
+        return if(position < rates.size ){
+            rates[position]
+        }else{
+            null
+        }
+    }
     fun hasSameBaseCurrency(newBaseCurrency: SingleRate?): Boolean {
         if (itemCount == 0) return false
         val oldBaseCurrency = rates.firstOrNull()
