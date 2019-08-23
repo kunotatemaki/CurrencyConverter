@@ -31,5 +31,4 @@ class RepositoryImpl @Inject constructor(private val networkServiceFactory: Netw
     override fun getRatesWithRxJava(base: String): Single<Rates?> =
         networkServiceFactory.getServiceInstance().getLatestRatesWithRxJava(base)
 
-
 }

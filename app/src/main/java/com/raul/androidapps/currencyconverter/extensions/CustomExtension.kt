@@ -1,12 +1,14 @@
 package com.raul.androidapps.currencyconverter.extensions
 
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import java.lang.ref.WeakReference
 import java.text.Normalizer
+import java.util.*
 
 fun String.normalizedString(): String {
     val normalized: String = Normalizer.normalize(this, Normalizer.Form.NFD)
-    return normalized.replace("[^\\p{ASCII}]".toRegex(), "").trim { it <= ' ' }.toLowerCase()
+    return normalized.replace("[^\\p{ASCII}]".toRegex(), "").trim { it <= ' ' }.toLowerCase(Locale.ROOT)
 }
 
 fun <X, Y> LiveData<X>.switchMap(func: (X) -> LiveData<Y>)
@@ -21,7 +23,6 @@ fun <T> LiveData<T>.getDistinct(): LiveData<T> {
     distinctLiveData.addSource(this, object : Observer<T> {
         private var initialized = false
         private var lastObj: T? = null
-        val test = 4.toDouble()
         override fun onChanged(obj: T?) {
             if (!initialized) {
                 initialized = true
@@ -41,7 +42,7 @@ class NonNullMediatorLiveData<T> : MediatorLiveData<T>()
 
 fun <T> LiveData<T>.nonNull(): NonNullMediatorLiveData<T> {
     val mediator: NonNullMediatorLiveData<T> = NonNullMediatorLiveData()
-    mediator.addSource(this, Observer { it?.let { mediator.value = it } })
+    mediator.addSource(this) { it?.let { mediator.value = it } }
     return mediator
 }
 
