@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.VisibleForTesting
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -25,8 +24,7 @@ class ConversionFragment : BaseFragment() {
 
     private lateinit var binding: ConversionFragmentBinding
 
-    @VisibleForTesting
-    lateinit var viewModel: BaseViewModel
+    private lateinit var viewModel: BaseViewModel
     private lateinit var adapter: ConversionAdapter
 
     private var copyBinding: RateItemBinding? = null
@@ -35,11 +33,11 @@ class ConversionFragment : BaseFragment() {
     private var animatingFlag = false
 
     private enum class MultiThreadingMethod {
-        COROUTINES, RX_JAVA
+        COROUTINE, RX_JAVA
     }
 
 
-    private var threading: MultiThreadingMethod = MultiThreadingMethod.COROUTINES
+    private var threading: MultiThreadingMethod = MultiThreadingMethod.COROUTINE
 
     private val basePriceListener: BasePriceListener = object : BasePriceListener() {
         override fun updateBasePrice(basePrice: String) {
@@ -111,7 +109,7 @@ class ConversionFragment : BaseFragment() {
             positionOfSelectedViewOnScreenInPx: Float
         ) {
             val inflater = LayoutInflater.from(context)
-            copyBinding = DataBindingUtil.inflate<RateItemBinding>(
+            copyBinding = DataBindingUtil.inflate(
                 inflater,
                 R.layout.rate_item,
                 binding.main,
@@ -152,11 +150,12 @@ class ConversionFragment : BaseFragment() {
                         }
                         val newList = adapter.moveRateToTheTop(positionOfSelectedViewInAdapter)
                         viewModel.setRates(newList)
-                        if(newList.isNotEmpty())
-                        viewModel.changeCurrency(newList.first().code)
+                        if (newList.isNotEmpty())
+                            viewModel.changeCurrency(newList.first().code)
                         updateBasePrice(basePrice)
                         animatingFlag = false
                     }
+
                     override fun onAnimationCancel(p0: Animator?) {}
                     override fun onAnimationStart(p0: Animator?) {}
                 })?.start()
@@ -197,7 +196,7 @@ class ConversionFragment : BaseFragment() {
         arguments?.apply {
             val safeArgs = ConversionFragmentArgs.fromBundle(this)
             threading = if (safeArgs.coroutines) {
-                MultiThreadingMethod.COROUTINES
+                MultiThreadingMethod.COROUTINE
             } else {
                 MultiThreadingMethod.RX_JAVA
             }
@@ -222,7 +221,7 @@ class ConversionFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         if (::viewModel.isInitialized.not()) {
             viewModel = when (threading) {
-                MultiThreadingMethod.COROUTINES -> ViewModelProviders.of(
+                MultiThreadingMethod.COROUTINE -> ViewModelProviders.of(
                     this,
                     viewModelFactory
                 ).get(
@@ -257,7 +256,7 @@ class ConversionFragment : BaseFragment() {
         viewModel.getRates()
             .nonNull()
             .observe({ lifecycle }) { rates ->
-                if(animatingFlag.not()) {
+                if (animatingFlag.not()) {
                     if (rates.list.isNotEmpty()) {
                         binding.progressCircular.visibility = View.GONE
                     }

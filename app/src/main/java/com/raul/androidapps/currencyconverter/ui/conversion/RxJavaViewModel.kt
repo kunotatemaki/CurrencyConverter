@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
-class RxJavaViewModel @Inject constructor(private val repository: Repository) :
+class RxJavaViewModel constructor(private val repository: Repository) :
     BaseViewModel() {
 
     private val disposableComposer: CompositeDisposable = CompositeDisposable()

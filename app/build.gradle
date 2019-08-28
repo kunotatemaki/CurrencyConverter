@@ -14,8 +14,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner "com.raul.androidapps.currencyconverter.CustomAndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -88,8 +87,6 @@ dependencies {
     implementation "android.arch.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
     implementation "android.arch.navigation:navigation-fragment:$rootProject.navigationVersion"
     implementation "android.arch.navigation:navigation-ui:$rootProject.navigationVersion"
-
-    androidTestImplementation 'com.github.tmurakami:dexopener:0.12.1'
 
     def mockito_version = '2.23.0'
     def mockitoKotlin_version = '2.1.0'

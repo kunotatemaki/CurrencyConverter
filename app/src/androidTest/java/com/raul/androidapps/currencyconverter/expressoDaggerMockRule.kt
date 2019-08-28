@@ -1,12 +1,12 @@
 package com.raul.androidapps.currencyconverter
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.raul.androidapps.currencyconverter.debug.AppComponentForTest
 import it.cosenonjaviste.daggermock.DaggerMock
-import testclasses.AppProvidesModuleForTest
+import testclasses.AppComponentForTest
+import testclasses.AppModuleForTest
 
 
-fun espressoDaggerMockRule() = DaggerMock.rule<AppComponentForTest>(AppProvidesModuleForTest()) {
+fun espressoDaggerMockRule() = DaggerMock.rule<AppComponentForTest>(AppModuleForTest()) {
     set { component -> component.inject(app) }
     customizeBuilder<AppComponentForTest.Builder> { it.application(app) }
 }
