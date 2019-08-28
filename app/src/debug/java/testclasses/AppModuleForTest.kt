@@ -23,7 +23,7 @@ import dagger.Provides
 open class AppModuleForTest {
 
     @Provides
-    fun providesContext(application: CurrencyConverterApplication): Context =
+    open fun providesContext(application: CurrencyConverterApplication): Context =
         application.applicationContext
 
     @Provides
@@ -34,22 +34,22 @@ open class AppModuleForTest {
     open fun rxJavaViewModel(repository: Repository): RxJavaViewModel = RxJavaViewModel(repository)
 
     @Provides
-    fun provideResourcesManager(resourcesManagerImpl: ResourcesManagerImpl): ResourcesManager =
+    open fun provideResourcesManager(resourcesManagerImpl: ResourcesManagerImpl): ResourcesManager =
         resourcesManagerImpl
 
     @Provides
-    fun provideNetworkServiceFactory(networkServiceFactoryImp: NetworkServiceFactoryImpl): NetworkServiceFactory =
+    open fun provideNetworkServiceFactory(networkServiceFactoryImp: NetworkServiceFactoryImpl): NetworkServiceFactory =
         networkServiceFactoryImp
 
     @Provides
-    fun provideEncryption(encryptionImpl: EncryptionImpl): Encryption = encryptionImpl
+    open fun provideEncryption(encryptionImpl: EncryptionImpl): Encryption = encryptionImpl
 
     @Provides
-    fun providePreferencesManager(preferencesManagerImpl: PreferencesManagerImpl): PreferencesManager =
+    open fun providePreferencesManager(preferencesManagerImpl: PreferencesManagerImpl): PreferencesManager =
         preferencesManagerImpl
 
     @Provides
-    fun provideRepository(repositoryImpl: RepositoryImpl): Repository = repositoryImpl
+    open fun provideRepository(repositoryImpl: RepositoryImpl): Repository = repositoryImpl
 
 
 }
