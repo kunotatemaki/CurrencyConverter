@@ -10,11 +10,12 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.raul.androidapps.currencyconverter"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.raul.androidapps.currencyconverter.CustomAndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -43,6 +44,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.core:core-ktx:1.0.2'
@@ -64,8 +66,8 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.0.0'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.1'
 
     kapt "androidx.databinding:databinding-compiler:$rootProject.gradle_version"
 
@@ -78,8 +80,7 @@ dependencies {
 
     implementation "com.jakewharton.timber:timber:4.7.1"
 
-    androidTestImplementation 'androidx.test:rules:1.1.0'
-    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
 
 
     //Navigation
@@ -88,6 +89,7 @@ dependencies {
     implementation "android.arch.navigation:navigation-fragment:$rootProject.navigationVersion"
     implementation "android.arch.navigation:navigation-ui:$rootProject.navigationVersion"
 
+    androidTestImplementation 'com.github.tmurakami:dexopener:0.12.1'
 
     def mockito_version = '2.23.0'
     def mockitoKotlin_version = '2.1.0'
@@ -119,4 +121,10 @@ dependencies {
     def lifecycleVersion = '2.0.0'
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+
+    /* Dagger mock */
+    testImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
+    testImplementation 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
+    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock:0.8.4'
+    androidTestImplementation 'com.github.fabioCollini.daggermock:daggermock-kotlin:0.8.4'
 }

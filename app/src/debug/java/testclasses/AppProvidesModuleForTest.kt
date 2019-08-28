@@ -1,4 +1,4 @@
-package com.raul.androidapps.currencyconverter.di.modules
+package testclasses
 
 import android.content.Context
 import com.raul.androidapps.currencyconverter.CurrencyConverterApplication
@@ -6,9 +6,9 @@ import com.raul.androidapps.currencyconverter.domain.model.BooleanKey
 import dagger.Module
 import dagger.Provides
 
-@Module(includes = [(ViewModelModule::class)])
-class AppProvidesModule {
 
+@Module
+class AppProvidesModuleForTest {
 
     @Provides
     fun providesContext(application: CurrencyConverterApplication): Context =
@@ -16,7 +16,7 @@ class AppProvidesModule {
 
     @Provides
     fun provideABCKey(): BooleanKey = BooleanKey(
-        "app"
+        "test"
     )
 
 }

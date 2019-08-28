@@ -2,6 +2,7 @@ package com.raul.androidapps.currencyconverter.ui.conversion
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
+import com.raul.androidapps.currencyconverter.domain.model.BooleanKey
 import com.raul.androidapps.currencyconverter.domain.model.Rates
 import com.raul.androidapps.currencyconverter.domain.model.SingleRate
 import com.raul.androidapps.currencyconverter.network.Resource
@@ -10,7 +11,7 @@ import com.raul.androidapps.currencyconverter.ui.common.BaseViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-open class CoroutineViewModel @Inject constructor(private val repository: Repository) :
+open class CoroutineViewModel @Inject constructor(private val repository: Repository, private val key: BooleanKey) :
     BaseViewModel() {
 
 
@@ -28,6 +29,7 @@ open class CoroutineViewModel @Inject constructor(private val repository: Reposi
     }
 
     override fun startFetchingRatesAsync() {
+        val name = key.name()
         fetchingJob = Job(viewModelJob)
         viewModelScope.launch(Dispatchers.IO + fetchingJob) {
             while (true) {
