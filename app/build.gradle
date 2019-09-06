@@ -91,10 +91,12 @@ dependencies {
     def mockito_version = '2.23.0'
     def mockitoKotlin_version = '2.1.0'
     testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation 'org.mockito:mockito-android:2.28.2'
     androidTestImplementation 'org.mockito:mockito-android:2.28.2'
     androidTestImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlin_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlin_version"
     testImplementation 'android.arch.core:core-testing:1.1.1'
-    def fragment_version = "1.2.0-alpha02"
+    def fragment_version = "1.2.0-alpha03"
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
     debugImplementation "androidx.test:core:1.2.0"
 

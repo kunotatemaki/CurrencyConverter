@@ -78,14 +78,14 @@ class ViewModelTest {
         runBlocking {
             val firstJob = coroutineViewModel.updateObservableAsync(oldRates)
             firstJob.join()
-            val ratesBefore = coroutineViewModel.getRates().getItem()
+            val ratesBefore = coroutineViewModel.getRates().value!!
             assertEquals(ratesBefore.list[0].code, "EUR")
             assertTrue(ratesBefore.list[0].isBasePrice)
             assertEquals(ratesBefore.list[1].code, "USD")
             assertEquals(ratesBefore.list[2].code, "GBP")
             val secondJob = coroutineViewModel.updateObservableAsync(newRates)
             secondJob.join()
-            val ratesLater = coroutineViewModel.getRates().getItem()
+            val ratesLater = coroutineViewModel.getRates().value!!
             assertEquals(ratesLater.list[0].code, "GBP")
             assertTrue(ratesLater.list[0].isBasePrice)
             assertEquals(ratesLater.list[1].code, "EUR")

@@ -1,10 +1,7 @@
 package com.raul.androidapps.currencyconverter.network
 
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
 
-
-class Resource<out T>(@NonNull val status: Status, @Nullable val data: T?, @Nullable val message: String?) {
+class Resource<out T>(val status: Status, val data: T?, val message: String?) {
 
     enum class Status {
         SUCCESS,

@@ -1,12 +1,12 @@
 package com.raul.androidapps.currencyconverter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.nhaarman.mockitokotlin2.whenever
 import com.raul.androidapps.currencyconverter.domain.model.Rates
 import com.raul.androidapps.currencyconverter.domain.model.SingleRate
+import com.raul.androidapps.currencyconverter.network.NetworkApi
 import com.raul.androidapps.currencyconverter.network.NetworkServiceFactory
 import com.raul.androidapps.currencyconverter.network.Resource
-import com.raul.androidapps.currencyconverter.network.NetworkApi
-import com.raul.androidapps.currencyconverter.repository.Repository
 import com.raul.androidapps.currencyconverter.repository.RepositoryImpl
 import kotlinx.coroutines.runBlocking
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -14,8 +14,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
@@ -31,7 +31,8 @@ class RepositoryTest {
     @Mock
     lateinit var api: NetworkApi
 
-    private lateinit var repository: Repository
+    @InjectMocks
+    private lateinit var repository: RepositoryImpl
     private lateinit var rates: Rates
 
     @Before
@@ -43,9 +44,8 @@ class RepositoryTest {
         )
         rates = Rates(list)
         MockitoAnnotations.initMocks(this)
-        repository = RepositoryImpl(networkServiceFactory)
 
-        Mockito.`when`(networkServiceFactory.getServiceInstance())
+        whenever(networkServiceFactory.getServiceInstance())
             .thenReturn(
                 api
             )
@@ -55,7 +55,7 @@ class RepositoryTest {
     fun testResponseSuccess() {
         runBlocking {
             val currency = "EUR"
-            Mockito.`when`(api.getLatestRatesWithCoroutines(currency))
+            whenever(api.getLatestRatesWithCoroutines(currency))
                 .thenReturn(
                     Response.success(rates)
                 )
@@ -69,10 +69,25 @@ class RepositoryTest {
     fun testResponseError() {
         runBlocking {
             val currency = "EUR"
-            Mockito.`when`(api.getLatestRatesWithCoroutines(currency))
+            whenever(api.getLatestRatesWithCoroutines(currency))
                 .thenReturn(
                     Response.error(404, "".toResponseBody(null))
                 )
+            val response = repository.getRatesWithCoroutines(currency)
+            assertEquals(response.status, Resource.Status.ERROR)
+            assertEquals(response.data, null)
+        }
+    }
+
+    @Suppress("DIVISION_BY_ZERO")
+    @Test
+    fun testResponseException() {
+        runBlocking {
+            val currency = "EUR"
+            whenever(api.getLatestRatesWithCoroutines(currency))
+                .then {
+                    1 / 0
+                }
             val response = repository.getRatesWithCoroutines(currency)
             assertEquals(response.status, Resource.Status.ERROR)
             assertEquals(response.data, null)

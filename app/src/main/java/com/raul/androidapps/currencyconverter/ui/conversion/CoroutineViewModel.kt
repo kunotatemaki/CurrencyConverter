@@ -25,8 +25,7 @@ open class CoroutineViewModel constructor(private val repository: Repository) :
     }
 
     override fun startFetchingRatesAsync() {
-        fetchingJob = Job(viewModelJob)
-        viewModelScope.launch(Dispatchers.IO + fetchingJob) {
+        fetchingJob = viewModelScope.launch(Dispatchers.IO) {
             while (true) {
                 val ratesResponse = repository.getRatesWithCoroutines(baseCurrency)
                 if (ratesResponse.status == Resource.Status.SUCCESS) {
